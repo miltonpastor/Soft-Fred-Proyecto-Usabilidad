@@ -1,17 +1,19 @@
 <div class="unirse-partida">
-    <h2>Unirse a la Partida</h2>
-    <form (ngSubmit)="joinGame()">
-      <label for="codigoPartida">Código de la Partida:</label>
-      <input
-        type="text"
-        id="codigoPartida"
-        [(ngModel)]="codigoPartida"
-        name="codigoPartida"
-        class="input"
-        required
-      />
-      <button type="submit" class="btn primary">Unirse</button>
-      <button type="button" (click)="close()" class="btn secondary">Cerrar</button>
-    </form>
-  </div>
-  
+  <h2>Unirse a una Partida</h2>
+
+  <input
+    [(ngModel)]="codigoPartida"
+    name="codigoPartida"
+    class="input"
+    placeholder="Código de la partida"
+    required
+  />
+
+  <button (click)="joinGame()" class="btn primary" [disabled]="!codigoPartida.trim()">
+    Unirse a la partida
+  </button>
+
+  <button (click)="close()" class="btn secondary">
+    Cerrar
+  </button>
+</div>

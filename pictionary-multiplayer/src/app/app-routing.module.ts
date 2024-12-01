@@ -4,12 +4,12 @@ import { InicioComponent } from './components/inicio/inicio.component';
 import { InterfazDibujanteComponent } from './components/interfaz-dibujante/interfaz-dibujante.component';
 import { InterfazAdivinarComponent } from './components/interfaz-adivinar/interfaz-adivinar.component';
 import { InterfazAjustesComponent } from './components/interfaz-ajustes/interfaz-ajustes.component';
-import { SalaEsperaComponent } from './components/sala-espera/sala-espera.component';
 import { ResumenComponent } from './components/resumen/resumen.component';
+import { PartidaComponent } from './components/partida/partida.component';
 
 const routes: Routes = [
   { path: '', component: InicioComponent }, // Ruta inicial
-  { path: 'sala-espera', component: SalaEsperaComponent },
+  { path: 'partida', component: PartidaComponent }, // Ruta para la partida, donde se gestiona el juego
   { path: 'dibujar', component: InterfazDibujanteComponent },
   { path: 'adivinar', component: InterfazAdivinarComponent },
   { path: 'ajustes', component: InterfazAjustesComponent },

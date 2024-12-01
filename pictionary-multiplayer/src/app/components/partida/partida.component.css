@@ -1,0 +1,110 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #121212; /* Fondo oscuro principal */
+    color: #ffffff; /* Texto claro */
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #1f1f1f; /* Fondo oscuro para la barra superior */
+    border-bottom: 1px solid #444; /* Línea sutil */
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+  }
+  
+  .panel-left,
+  .panel-right {
+    flex: 0.2;
+    background-color: #1f1f1f; /* Fondo oscuro para paneles laterales */
+    padding: 15px;
+    border-left: 1px solid #444; /* Separador entre paneles */
+    border-right: 1px solid #444;
+  }
+  
+  .panel-left .player-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .panel-left .player-card {
+    display: flex;
+    justify-content: space-between;
+    background-color: #2b2b2b; /* Fondo de las tarjetas de jugadores */
+    border: 1px solid #444; /* Borde sutil */
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+  
+  .drawing-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1a1a1a; /* Fondo oscuro del área de dibujo */
+  }
+  
+  .canvas-controls {
+    margin-top: 10px;
+  }
+  
+  .panel-right .chat-box {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    margin-bottom: 10px;
+    background-color: #2b2b2b; /* Fondo oscuro para la caja de chat */
+    border: 1px solid #444; /* Borde sutil */
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .letter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    gap: 5px;
+    padding: 10px;
+    background-color: #2b2b2b; /* Fondo oscuro para la grilla */
+    border-radius: 5px;
+  }
+  
+  .letter-grid div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #444; /* Fondo de las letras */
+    color: #ffffff;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  /* Botones en el área de dibujo */
+  button {
+    background-color: #007bff; /* Azul para botones */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #3399ff; /* Azul más claro al pasar el cursor */
+  }
+  
+  button:disabled {
+    background-color: #444; /* Botón desactivado */
+    cursor: not-allowed;
+    color: #888;
+  }
+  

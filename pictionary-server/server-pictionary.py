@@ -111,8 +111,9 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('mensaje', {'mensaje': f'{nombre_jugador} se ha unido a la partida'}, room=codigo_partida)
-
+    emit('actualizar_jugadores', {'mensaje': f'{nombre_jugador} se ha unido a la partida'}, room=codigo_partida)
+    print(partida['jugadores'])
+    
 # Evento para iniciar una ronda
 @socketio.on('iniciar_ronda')
 def iniciar_ronda(codigo_partida):
@@ -157,6 +158,7 @@ def adivinar(codigo_partida, intento):
     if intento.lower() == partida['palabra'].lower():
         emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
         partida['adivinanza'] = intento
+    emit('mensaje_chat', {'mensaje': f'{request.sid} ha intentado adivinar la palabra'}, room=codigo_partida)
         # Aquí puedes agregar la lógica de finalizar la ronda si la palabra es adivinada
 
 # Empezar el servidor

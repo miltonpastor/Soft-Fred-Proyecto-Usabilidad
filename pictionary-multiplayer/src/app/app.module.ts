@@ -9,10 +9,10 @@ import { InterfazAdivinarComponent } from './components/interfaz-adivinar/interf
 import { InterfazAjustesComponent } from './components/interfaz-ajustes/interfaz-ajustes.component';
 import { ResumenComponent } from './components/resumen/resumen.component';
 import { CommonModule } from '@angular/common';
-import { SalaEsperaComponent } from './components/sala-espera/sala-espera.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CrearPartidaComponent } from './components/crear-partida/crear-partida.component';
 import { UnirsePartidaComponent } from './components/unirse-partida/unirse-partida.component';
+import { PartidaComponent } from './components/partida/partida.component';
 
 @NgModule({
   declarations: [
@@ -22,9 +22,9 @@ import { UnirsePartidaComponent } from './components/unirse-partida/unirse-parti
     InterfazAdivinarComponent,
     InterfazAjustesComponent,
     ResumenComponent,
-    SalaEsperaComponent,
     CrearPartidaComponent,
-    UnirsePartidaComponent    
+    UnirsePartidaComponent,
+    PartidaComponent    
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,7 @@ import { PartidaService } from '../../services/partida.service'; // Asegúrate d
 @Component({
   selector: 'app-crear-partida',
   templateUrl: './crear-partida.component.html',
+  styleUrls: ['./crear-partida.component.css'],
   standalone: false
 })
 export class CrearPartidaComponent {

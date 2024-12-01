@@ -53,7 +53,6 @@ export class PartidaService {
     });
   }
 
-  // Adivinar la palabra
   adivinar(codigoPartida: string, intento: string): void {
     this.socket.emit('adivinar', codigoPartida, intento);
   }
@@ -70,13 +69,79 @@ export class PartidaService {
     return this.http.get<Partida>(`${this.apiUrl}/estado_partida/${codigoPartida}`);
   }
 
-  // Unirse a una sala de juego a través de Socket.IO
-  unirseASala(codigoPartida: string): void {
-    this.socket.emit('unirse_partida_socket', codigoPartida);
+  unirseASala(codigoPartida: string, nombreJugador: string): void {
+    this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador);
   }
-
+  
   // Salir de la sala
   salirDeSala(codigoPartida: string): void {
     this.socket.emit('salir_partida_socket', codigoPartida);
   }
+
+  // Escuchar eventos de error
+  escucharErrores() {
+    return new Observable<any>(observer => {
+      this.socket.on('error', (error: any) => {
+        observer.next(error);
+      });
+    });
+  }
+
+  // Iniciar la ronda
+  iniciarRonda(codigoPartida: string) {
+    this.socket.emit('iniciar_ronda', codigoPartida);
+  }
+
+  // Escuchar si la partida ha comenzado
+  escucharInicioPartida() {
+    return new Observable<any>(observer => {
+      this.socket.on('tu_turno', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  // Escuchar actualizaciones de dibujo
+  escucharDibujo() {
+    return new Observable<any>(observer => {
+      this.socket.on('actualizar_dibujo', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  // Salir de la sala
+  salir() {
+    this.socket.disconnect();
+  }
+  ngOnDestroy(): void {
+    // Cerrar la conexión cuando el servicio se destruya
+    this.socket.disconnect();
+  }
+
+// Escuchar los mensajes de chat
+escucharChat() {
+  return new Observable<string>(observer => {
+    this.socket.on('mensaje_chat', (data: { mensaje: string }) => {
+      observer.next(data.mensaje);
+    });
+  });
+}
+
+// En el servicio, escucha los cambios de jugadores (unión a la partida)
+escucharUnirsePartida(): Observable<string[]> {
+  return new Observable<string[]>(observer => {
+    this.socket.on('actualizar_jugadores', (data: {jugadores: string[]}) => {
+      observer.next(data.jugadores); // Emite el array de jugadores
+    });
+  });
+}
+
+// Enviar mensaje de chat
+enviarMensajeChat(codigoPartida: string, mensaje: string): void {
+  this.socket.emit('mensaje_chat', { codigoPartida, mensaje });
+}
+
+
+
 }

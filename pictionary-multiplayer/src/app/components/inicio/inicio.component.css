@@ -1,0 +1,114 @@
+.container {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    background: #121212; /* Fondo oscuro */
+    color: #ffffff; /* Texto claro */
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  .header {
+    background: #1f1f1f; /* Fondo más oscuro para la cabecera */
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #ffffff; /* Texto claro */
+    background: #2b2b2b; /* Fondo del input */
+    border: 1px solid #444; /* Borde sutil */
+    border-radius: 5px;
+  }
+  
+  .avatar-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+  }
+  
+  .avatar-btn {
+    background-color: #444; /* Botón oscuro */
+    color: #ffffff;
+    border: 1px solid #666;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .random-btn {
+    background-color: #ff9800; /* Naranja para destacar */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .random-btn:hover {
+    background-color: #ffa726; /* Color más claro al pasar el cursor */
+  }
+  
+  .play-btn {
+    background-color: #4caf50; /* Verde para el botón principal */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .play-btn:hover {
+    background-color: #66bb6a; /* Verde más claro al pasar el cursor */
+  }
+  
+  .info-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .info-card {
+    background: #1f1f1f; /* Fondo oscuro para las tarjetas */
+    color: #ffffff; /* Texto claro */
+    width: 30%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #444; /* Bordes oscuros */
+    text-align: left;
+  }
+  
+  .footer {
+    margin-top: 20px;
+  }
+  
+  .footer button {
+    background-color: #007bff; /* Azul para los botones secundarios */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 10px;
+  }
+  
+  .footer button:hover {
+    background-color: #3399ff; /* Azul más claro al pasar el cursor */
+  }
+  
+  .footer button:disabled {
+    background-color: #444; /* Botón desactivado oscuro */
+    cursor: not-allowed;
+    color: #888; /* Texto gris */
+  }
+  

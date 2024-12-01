@@ -1,32 +1,82 @@
-<div class="container">
-  <h1>🎨 Bienvenido a Pictionary Multijugador</h1>
+<div class="container bg-dark text-light py-5 rounded">
+  <div class="mb-4 text-center">
+    <input
+      [(ngModel)]="username"
+      name="username"
+      class="form-control mb-3 bg-secondary text-light"
+      placeholder="Ingresa tu nombre"
+      required
+    />
 
-  <input
-    [(ngModel)]="username"
-    name="username"
-    class="input"
-    placeholder="Ingresa tu nombre"
-    required
-  />
-
-  <button (click)="showCreateComponent()" class="btn secondary" [disabled]="!username">Crear Partida</button>
-  <button (click)="showJoinComponent()" class="btn secondary" [disabled]="!username">Unirse a Partida</button>
-
-  <app-crear-partida
-    *ngIf="showCreate"
-    (partidaCreada)="onPartidaCreada($event)"
-  ></app-crear-partida>
-
-  <app-unirse-partida
-    *ngIf="showJoin"
-    (partidaUnida)="onPartidaUnida($event)"
-  ></app-unirse-partida>
-
-  <div class="info">
-    <h2>ℹ️ Información del Juego</h2>
-    <p>
-      Pictionary es un juego de adivinanzas donde un jugador dibuja y los demás
-      intentan adivinar la palabra. ¡Diviértete con tus amigos!
-    </p>
+    <div class="d-flex justify-content-center align-items-center mb-3">
+      <button (click)="changeAvatar('prev')" class="btn btn-outline-light me-2">
+        ◀
+      </button>
+      <div class="avatar-icon bg-secondary rounded-circle p-3 text-center">
+        👤
+      </div>
+      <button (click)="changeAvatar('next')" class="btn btn-outline-light ms-2">
+        ▶
+      </button>
+      <button class="btn btn-warning ms-3" (click)="randomizeAvatar()">🎲</button>
+    </div>
+    <div class="text-center">
+      <button
+        class="btn btn-primary mx-2"
+        (click)="showCreateComponent()"
+        [disabled]="!username"
+      >
+        Crear Partida
+      </button>
+      <button
+        class="btn btn-primary mx-2"
+        (click)="showJoinComponent()"
+        [disabled]="!username"
+      >
+        Unirse a Partida
+      </button>
+    </div>
+  
+    <app-crear-partida
+      *ngIf="showCreate"
+      (partidaCreada)="onPartidaCreada($event)"
+    ></app-crear-partida>
+  
+    <app-unirse-partida
+      *ngIf="showJoin"
+      (partidaUnida)="onPartidaUnida($event)"
+    ></app-unirse-partida>
   </div>
+
+  <div class="row text-center mb-4">
+    <div class="col-md-4">
+      <div class="card bg-secondary text-light p-3">
+        <h3 class="card-title">❓ Acerca de</h3>
+        <p class="card-text">
+          Pictionary es un juego de adivinanzas donde un jugador dibuja y los
+          demás intentan adivinar. ¡Diviértete con tus amigos!
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-secondary text-light p-3">
+        <h3 class="card-title">📰 Noticias</h3>
+        <p class="card-text">
+          Mantente informado sobre las últimas actualizaciones, mejoras y
+          eventos del juego. ¡No te lo pierdas!
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-secondary text-light p-3">
+        <h3 class="card-title">✏️ Cómo jugar</h3>
+        <p class="card-text">
+          Para comenzar, selecciona "Crear Partida" o "Unirse a Partida", luego
+          sigue las instrucciones para jugar.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  
 </div>

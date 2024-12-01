@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-interfaz-ajustes',
   templateUrl: './interfaz-ajustes.component.html',
+  styleUrls: ['./interfaz-ajustes.component.css'],
   standalone: false
 })
 export class InterfazAjustesComponent {
