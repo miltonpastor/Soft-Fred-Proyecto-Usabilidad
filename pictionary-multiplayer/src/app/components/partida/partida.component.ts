@@ -16,7 +16,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
   nombreAnfitrion: string = '';
   intento: string = '';
   tiempoPorRonda: number = 30;  // Ejemplo de valor
-  jugadores: string[] = [];
+  jugadores: string[] = []; // Aquí almacenamos la lista de jugadores
   estadoPartida: string = 'esperando';  // Estado inicial de la partida
   partida: Partida = {} as Partida;
   partidaSubscription: Subscription = new Subscription();
@@ -57,10 +57,14 @@ export class PartidaComponent implements OnInit, OnDestroy {
     });
 
     // Obtener el contexto del canvas
-    const canvas: HTMLCanvasElement = document.getElementById('canvas') as HTMLCanvasElement;
-    this.context = canvas.getContext('2d')!;
-    this.context.lineWidth = this.brushSize; // Configurar tamaño inicial del pincel
-    this.context.strokeStyle = this.brushColor; // Configurar color inicial del pincel
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement | null;
+    if (canvas) {
+      this.context = canvas.getContext('2d')!;
+      this.context.lineWidth = this.brushSize; // Configurar tamaño inicial del pincel
+      this.context.strokeStyle = this.brushColor; // Configurar color inicial del pincel
+    } else {
+      console.error('Canvas no encontrado.');
+    }
 
     // Escuchar los jugadores y el chat en tiempo real
     this.iniciarEscucharPartida();
@@ -72,12 +76,19 @@ export class PartidaComponent implements OnInit, OnDestroy {
     this.partidaSubscription.unsubscribe();
   }
 
-  // Escuchar eventos de participantes (jugadores)
+  // En el componente donde se escucha el evento
   iniciarEscucharPartida(): void {
     this.partidaSubscription.add(
-      this.partidaService.escucharUnirsePartida().subscribe((jugadores: string[]) => {
-        this.jugadores = jugadores; // Actualiza la lista de jugadores
-      })
+      this.partidaService.escucharUnirsePartida().subscribe(
+        (jugadores: string[]) => {
+          // Actualiza la lista de jugadores
+          this.jugadores = jugadores;
+          console.log('Jugadores actualizados:', this.jugadores);
+        },
+        (error) => {
+          console.error('Error al recibir la lista de jugadores:', error);
+        }
+      )
     );
   }
 
@@ -98,21 +109,14 @@ export class PartidaComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Métodos para los controles del canvas
-  changeBrushSize(): void {
-    const sizes = [5, 10, 15, 20];
-    const currentIndex = sizes.indexOf(this.brushSize);
-    this.brushSize = sizes[(currentIndex + 1) % sizes.length];
-    this.context.lineWidth = this.brushSize;
-    console.log(`Tamaño de pincel cambiado a: ${this.brushSize}`);
-  }
-
+  // Usar el borrador
   useEraser(): void {
     this.brushColor = '#FFFFFF'; // Color blanco para el fondo
     this.context.strokeStyle = this.brushColor;
     console.log('Modo borrador activado.');
   }
 
+  // Deshacer la última acción
   undo(): void {
     if (this.drawingHistory.length > 0) {
       const lastState = this.drawingHistory.pop()!;
@@ -124,6 +128,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Rehacer la última acción
   redo(): void {
     if (this.redoStack.length > 0) {
       const nextState = this.redoStack.pop()!;
@@ -196,6 +201,28 @@ export class PartidaComponent implements OnInit, OnDestroy {
           this.errores.push('No se pudo iniciar la partida. Intenta nuevamente.');
         }
       });
+    }
+  }
+
+  // Modificado para aceptar un string (el valor del color)
+  setColor(color: string): void {
+    this.brushColor = color;
+    this.context.strokeStyle = this.brushColor;
+    console.log(`Color cambiado a: ${this.brushColor}`);
+  }
+
+  handleColorChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.setColor(input.value);
+  }
+
+  // Cambiar el tamaño del pincel
+  changeBrushSize(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input && input.value) {
+      this.brushSize = parseInt(input.value, 10);
+      this.context.lineWidth = this.brushSize;
+      console.log(`Tamaño de pincel cambiado a: ${this.brushSize}`);
     }
   }
 }

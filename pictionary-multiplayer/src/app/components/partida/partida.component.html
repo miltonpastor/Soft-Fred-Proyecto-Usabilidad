@@ -10,14 +10,10 @@
   <div class="main-content">
     <!-- Left Panel: Player List -->
     <div class="panel-left">
-      <ul class="player-list">
-        <li *ngFor="let jugador of jugadores">
-          <div class="player-card">
-            <span class="player-name">{{ jugador }}</span>
-            <span class="player-score">0 puntos</span>
-          </div>
-        </li>
-      </ul>
+      <div *ngFor="let jugador of jugadores" class="player-card">
+        <span class="player-name">{{ jugador }}</span>
+        <span class="player-score">0 puntos</span>
+      </div>
     </div>
 
     <!-- Center Panel: Drawing Area -->
@@ -32,7 +28,17 @@
         (mouseleave)="onMouseLeave($event)"
       ></canvas>
       <div class="canvas-controls">
-        <button (click)="changeBrushSize()">🖌️ Tamaño</button>
+        <!-- Selección de color -->
+        <div class="palette">
+          <button style="background-color: #ff0000;" (click)="setColor('#ff0000')"></button>
+          <button style="background-color: #00ff00;" (click)="setColor('#00ff00')"></button>
+          <button style="background-color: #0000ff;" (click)="setColor('#0000ff')"></button>
+          <button style="background-color: #000000;" (click)="setColor('#000000')"></button>
+          <input type="color" (change)="handleColorChange($event)" />
+        </div>
+        <!-- Tamaño de pincel -->
+        <input type="range" min="1" max="20" value="5" (input)="changeBrushSize($event)" />
+        <!-- Controles básicos -->
         <button (click)="useEraser()">✏️ Borrar</button>
         <button (click)="undo()">↩️ Deshacer</button>
         <button (click)="redo()">↪️ Rehacer</button>
@@ -50,15 +56,9 @@
         type="text"
         [(ngModel)]="mensajeChat"
         class="input"
-        placeholder="Escribe aquí tu respuesta"
+        placeholder="Escribe aquí"
       />
       <button (click)="enviarMensajeChat()">Enviar</button>
     </div>
-  </div>
-
-  <!-- Bottom Grid for Letters -->
-  <div class="letter-grid">
-    <!-- Add dynamically generated letters here -->
-    <div class="letter-tile" *ngFor="let letter of palabra">{{ letter }}</div>
   </div>
 </div>

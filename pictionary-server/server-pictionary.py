@@ -45,28 +45,13 @@ def crear_partida():
         'dibujo': "",
         'adivinanza': "",
         'turno': None,  # El jugador que está dibujando
+        'codigo_partida': codigo_partida
     }
     #print(partidas[codigo_partida])
 
-    return jsonify({'codigo_partida': codigo_partida}), 200
+    return jsonify({'partida': partidas[codigo_partida]}), 200
 
-# Ruta para unirse a una partida
-@app.route('/unirse_partida', methods=['POST'])
-def unirse_partida():
-    datos = request.json
-    codigo_partida = datos['codigo_partida']
-    nombre_jugador = datos['nombre_jugador']
 
-    if codigo_partida not in partidas:
-        return jsonify({'error': 'Código de partida inválido'}), 400
-
-    partida = partidas[codigo_partida]
-    if len(partida['jugadores']) >= 4:
-        return jsonify({'error': 'La partida ya está llena'}), 400
-
-    partida['jugadores'].append(nombre_jugador)
-
-    return jsonify({'mensaje': f'{nombre_jugador} se ha unido a la partida'}), 200
 
 # Ruta para iniciar la partida
 @app.route('/iniciar_partida', methods=['POST'])
@@ -105,13 +90,13 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
         return
 
     partida = partidas[codigo_partida]
-    if len(partida['jugadores']) >= 4:
+    if len(partida['jugadores']) >= 9:
         emit('error', {'mensaje': 'La partida está llena'})
         return
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'mensaje': f'{nombre_jugador} se ha unido a la partida'}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': f'{partida['jugadores']}'}, room=codigo_partida)
     print(partida['jugadores'])
     
 # Evento para iniciar una ronda

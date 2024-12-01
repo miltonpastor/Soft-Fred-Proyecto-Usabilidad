@@ -1,18 +1,22 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { PartidaService } from '../../services/partida.service'; // Asegúrate de importar el servicio
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { PartidaService } from '../../services/partida.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-crear-partida',
   templateUrl: './crear-partida.component.html',
   styleUrls: ['./crear-partida.component.css'],
-  standalone: false
+  standalone: false,
 })
 export class CrearPartidaComponent {
-  tiempoPorRonda: number = 30; // Tiempo por ronda en segundos
-  nombreAnfitrion: string = 'Jugador 1'; // Nombre del anfitrión, puedes obtenerlo del formulario
-  @Output() partidaCreada = new EventEmitter<number>(); // Emitir el tiempo para la creación
+  @Input() nombreJugador: string = '';
+  tiempoPorRonda: number = 30;
+  @Output() partidaCreada = new EventEmitter<number>();
 
-  constructor(private partidaService: PartidaService) {} // Inyección del servicio
+  constructor(
+    private partidaService: PartidaService,
+    private modalService: ModalService
+  ) {}
 
   createGame() {
     if (this.tiempoPorRonda < 10 || this.tiempoPorRonda > 120) {
@@ -20,20 +24,23 @@ export class CrearPartidaComponent {
       return;
     }
 
-    // Llamada al servicio para crear la partida
-    this.partidaService.crearPartida(this.nombreAnfitrion, this.tiempoPorRonda).subscribe({
+    this.partidaService.crearPartida(this.nombreJugador, this.tiempoPorRonda).subscribe({
       next: (response) => {
-        console.log('Partida creada con éxito:', response);
-        this.partidaCreada.emit(this.tiempoPorRonda); // Emitir el evento con el tiempo por ronda
+        const codigoPartida = response?.partida?.codigo_partida;
+        if (codigoPartida) {
+          this.modalService.setCodigoPartida(codigoPartida);
+          this.partidaCreada.emit(this.tiempoPorRonda);
+          this.partidaService.unirseASala(codigoPartida, this.nombreJugador);
+        } else {
+          console.error('Código de partida no disponible en la respuesta:', response);
+        }
       },
       error: (err) => {
         console.error('Error al crear la partida:', err);
         alert('Hubo un error al crear la partida. Intenta de nuevo.');
-      }
+      },
     });
   }
-
   close() {
-    //this.partidaCreada.emit(null); // Emitir null para indicar que se cierra el componente
   }
 }

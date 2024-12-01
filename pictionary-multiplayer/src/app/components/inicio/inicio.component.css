@@ -111,4 +111,54 @@
     cursor: not-allowed;
     color: #888; /* Texto gris */
   }
+/* Modal */
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #1f1f1f;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    max-width: 400px; /* Limitar el tamaño del modal */
+    width: 90%; /* Ancho ajustable según el tamaño de la pantalla */
+  }
+  
+  .modal-buttons {
+    margin-top: 20px;
+  }
+  
+  .modal-buttons button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .codigo {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: #ffeb3b;
+    margin-bottom: 20px;
+  }
+  
+  .modal-message {
+    font-size: 1.2em;
+    color: #4caf50;
+    font-weight: bold;
+    margin-top: 15px;
+  }
   

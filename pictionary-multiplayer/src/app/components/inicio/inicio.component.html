@@ -40,13 +40,40 @@
     <app-crear-partida
       *ngIf="showCreate"
       (partidaCreada)="onPartidaCreada($event)"
+      [nombreJugador]="username"
     ></app-crear-partida>
   
     <app-unirse-partida
       *ngIf="showJoin"
       (partidaUnida)="onPartidaUnida($event)"
+      [nombreJugador]="username"
     ></app-unirse-partida>
   </div>
+
+<!-- Modal -->
+<div class="modal" *ngIf="modalVisible">
+  <div class="modal-content">
+    <h3>¡Partida Creada!</h3>
+    <p>El código de tu partida es:</p>
+    <div class="codigo">{{ codigoPartida }}</div>
+
+    <!-- Mostrar el mensaje de éxito después de copiar -->
+    <div *ngIf="modalMessage" class="modal-message">
+      {{ modalMessage }}
+    </div>
+
+    <div class="modal-buttons">
+      <button (click)="copyToClipboard()" class="btn btn-outline-light">
+        Copiar Código
+      </button>
+      <button (click)="continueGame()" class="btn btn-primary">
+        Continuar
+      </button>
+    </div>
+  </div>
+</div>
+
+
 
   <div class="row text-center mb-4">
     <div class="col-md-4">

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PartidaService } from '../../services/partida.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { PartidaService } from '../../services/partida.service';
 })
 export class UnirsePartidaComponent {
   codigoPartida: string = ''; // Código de la partida
-  nombreJugador: string = ''; // Nombre
+  @Input() nombreJugador: string = ''; // Nombre
   @Output() partidaUnida = new EventEmitter<string | null>(); // Permitir null también
 
   constructor(private partidaService: PartidaService) {}
@@ -27,18 +27,6 @@ export class UnirsePartidaComponent {
     // Emitir el código de la partida para continuar el flujo
     this.partidaUnida.emit(this.codigoPartida);
 
-    // Escuchar la respuesta de Socket.IO cuando el jugador se une
-    this.partidaService.escucharUnirsePartida().subscribe({
-      next: (jugadores: string[]) => {
-        // Aquí puedes actualizar la UI con la lista de jugadores, por ejemplo
-        console.log('Jugadores actuales:', jugadores);
-        // Opcionalmente, puedes realizar acciones como actualizar la vista o navegar
-      },
-      error: (error) => {
-        console.error('Error al unirse a la partida', error);
-        alert('Hubo un error al unirse a la partida. Intenta nuevamente.');
-      }
-    });
   }
 
   // Función para cerrar el componente sin hacer nada
