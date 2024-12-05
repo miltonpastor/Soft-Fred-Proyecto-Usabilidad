@@ -1,17 +1,11 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS  # Importar CORS
 import random
-import time
-
-app = Flask(__name__)
-socketio = SocketIO(app)
 
 app = Flask(__name__)
 CORS(app)  # Permitir CORS para todas las rutas
-
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
-
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")  # Especificar el origen de tu frontend
 
 # Diccionario para manejar las partidas
 partidas = {}
@@ -47,30 +41,8 @@ def crear_partida():
         'turno': None,  # El jugador que está dibujando
         'codigo_partida': codigo_partida
     }
-    #print(partidas[codigo_partida])
 
     return jsonify({'partida': partidas[codigo_partida]}), 200
-
-
-
-# Ruta para iniciar la partida
-@app.route('/iniciar_partida', methods=['POST'])
-def iniciar_partida():
-    datos = request.json
-    codigo_partida = datos['codigo_partida']
-
-    if codigo_partida not in partidas:
-        return jsonify({'error': 'Código de partida inválido'}), 400
-
-    partida = partidas[codigo_partida]
-    if len(partida['jugadores']) < 2:
-        return jsonify({'error': 'Se necesitan al menos dos jugadores para comenzar'}), 400
-
-    partida['estado'] = 'jugando'
-    partida['ronda_actual'] = 1
-    partida['turno'] = partida['jugadores'][0]  # El primer jugador es el que dibuja
-
-    return jsonify({'mensaje': 'Partida iniciada'}), 200
 
 # Evento de conexión (para manejar cuando un jugador se conecta)
 @socketio.on('connect')
@@ -96,9 +68,9 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'lista': f'{partida['jugadores']}'}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': f"{partida['jugadores']}"}, room=codigo_partida)
     print(partida['jugadores'])
-    
+
 # Evento para iniciar una ronda
 @socketio.on('iniciar_ronda')
 def iniciar_ronda(codigo_partida):
@@ -116,7 +88,7 @@ def iniciar_ronda(codigo_partida):
     partida['palabra'] = palabra
     partida['dibujo'] = ""  # Limpiar dibujo
     partida['adivinanza'] = ""
-    
+
     # Enviar la palabra al jugador que debe dibujar
     emit('tu_turno', {'palabra': palabra}, room=codigo_partida)
 
@@ -148,4 +120,4 @@ def adivinar(codigo_partida, intento):
 
 # Empezar el servidor
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
