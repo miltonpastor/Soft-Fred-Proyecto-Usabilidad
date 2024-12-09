@@ -11,11 +11,8 @@ interface Option {
     image: string;
 }
 
-interface WordSelectionProps {
-    onSelect: (option: Option) => void;
-}
 
-export function WordSelectionPage({ onSelect }: WordSelectionProps) {
+export function WordSelectionPage() {
     const options: Option[] = [
         {
             id: 'autorretrato',
@@ -60,7 +57,7 @@ export function WordSelectionPage({ onSelect }: WordSelectionProps) {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {options.map((option) => (
-                            <CardWord option={option} onSelect={onSelect} />
+                            <CardWord option={option} />
                         ))}
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import useGameDataStore from "../../store/GameDataStore";
 
 interface CardWordProps {
     option: {
@@ -9,15 +10,15 @@ interface CardWordProps {
         icon: ReactNode;
         image: string;
     };
-    onSelect: (option: any) => void;
 }
 
 
-const CardWord = ({ option, onSelect }: CardWordProps) => {
+const CardWord = ({ option }: CardWordProps) => {
+    const { setWord } = useGameDataStore();
     return (
         <button
             key={option.id}
-            onClick={() => onSelect(option)}
+            onClick={() => setWord(option.title)}
             className="bg-blue02 border-2 border-blue-100 rounded-lg p-4 hover:border-blue-500 transition-all duration-200 flex flex-col"
         >
             <div className="flex items-center justify-center mb-4">
