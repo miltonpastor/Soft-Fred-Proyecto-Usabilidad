@@ -1,22 +1,16 @@
-<div class="app-container d-flex flex-column min-vh-100 bg-dark text-light">
+<div class="w-100 min-vh-100 d-flex flex-column">
   <!-- Header -->
-  <header class="app-header bg-primary py-3 shadow-sm">
-    <div class="container text-center">
-      <h1 class="display-4 text-white fw-bold">JuegoEducación cultural y artistica</h1>
-      <p class="lead text-light">¡Dibuja, aprende y adivina con tus amigos en tiempo real!</p>
+  <header class="app-header bg-custom-primary py-3 ">
+    <div class="d-flex align-items-center justify-content-center gap-2 container text-center">
+      <h1 class="display-4 text-white fw-bold">Pincelada</h1>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="app-main flex-grow-1 d-flex align-items-center justify-content-center">
-    <div class="container">
-      <br>
-      <br>
-      <router-outlet></router-outlet>
-      <br>
-    </div>
+  <main class="flex-grow-1 d-flex">
+    <!-- <main> -->
+    <router-outlet></router-outlet>
   </main>
-
   <!-- Footer -->
   <footer class="app-footer bg-secondary py-3 text-center">
     <div class="container">

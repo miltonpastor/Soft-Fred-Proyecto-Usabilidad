@@ -1,0 +1,12 @@
+:root {
+    --custom-primary-color: #123595;
+    --custom-secondary-color: #204AD0;
+}
+
+.bg-custom-primary {
+    background-color: var(--custom-primary-color) !important;
+}
+
+.bg-custom-secondary {
+    background-color: var(--custom-secondary-color) !important;
+}
