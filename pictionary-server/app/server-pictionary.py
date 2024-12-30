@@ -5,7 +5,7 @@ import random
 
 app = Flask(__name__)
 CORS(app)  # Permitir CORS para todas las rutas
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")  # Especificar el origen de tu frontend
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
 
 # Diccionario para manejar las partidas
 partidas = {}
