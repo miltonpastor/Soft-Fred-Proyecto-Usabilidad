@@ -11,7 +11,7 @@ export class AppComponent {
   @ViewChild('backgroundAudio', { static: true }) backgroundAudio!: ElementRef<HTMLAudioElement>;
   isModalOpen = false;
   isMusicPlaying = false;
-  currentVolume = 0.5;
+  currentVolume = 1;
 
   openModal() {
     this.isModalOpen = true;
