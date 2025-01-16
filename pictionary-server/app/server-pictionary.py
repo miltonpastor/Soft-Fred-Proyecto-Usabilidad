@@ -1,11 +1,17 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS  # Importar CORS
 import random
+import time
+
+app = Flask(__name__)
+socketio = SocketIO(app)
 
 app = Flask(__name__)
 CORS(app)  # Permitir CORS para todas las rutas
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
+
+socketio = SocketIO(app, cors_allowed_origins="*")  # Especificar el origen de tu frontend
+
 
 # Diccionario para manejar las partidas
 partidas = {}
@@ -90,7 +96,7 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'lista': f"{partida['jugadores']}"}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': f'{partida['jugadores']}'}, room=codigo_partida)
     print(partida['jugadores'])
     
 # Evento para iniciar una ronda
@@ -142,4 +148,4 @@ def adivinar(codigo_partida, intento):
 
 # Empezar el servidor
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True)

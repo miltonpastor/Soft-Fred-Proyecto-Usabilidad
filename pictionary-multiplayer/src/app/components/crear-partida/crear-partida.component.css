@@ -1,85 +1,73 @@
 .crear-partida {
-  background-color: #1f1f1f;
-  /* Fondo oscuro para el formulario */
-  color: #ffffff;
-  /* Texto claro */
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-  /* Centrar horizontalmente */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  /* Sombra sutil */
-}
-
-.crear-partida h2 {
-  font-size: 24px;
-  text-align: center;
-  color: #ff9800;
-  margin: 0px;
-  /* Naranja para destacar el título */
-}
-
-.crear-partida label {
-  font-size: 14px;
-  display: block;
-  font-weight: bold;
-  color: #ffffff;
-  /* Texto del label */
-}
-
-.crear-partida .input {
-  width: 100%;
-  padding: 6px;
-  font-size: 16px;
-  background-color: #2b2b2b;
-  /* Fondo oscuro del input */
-  color: #ffffff;
-  /* Texto claro */
-  border: 1px solid #444;
-  /* Borde sutil */
-  border-radius: 5px;
-}
-
-.crear-partida .input:focus {
-  border-color: #ff9800;
-  /* Naranja para enfoque */
-  outline: none;
-  box-shadow: 0 0 5px #ff9800;
-}
-
-.crear-partida .btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.crear-partida .btn.primary {
-  background-color: #4caf50;
-  /* Verde para el botón "Crear" */
-  color: white;
-}
-
-.crear-partida .btn.primary:hover {
-  background-color: #66bb6a;
-  /* Verde más claro al pasar el cursor */
-}
-
-.crear-partida .btn.secondary {
-  background-color: #444;
-  /* Gris oscuro para "Cerrar" */
-  color: #ffffff;
-}
-
-.crear-partida .btn.secondary:hover {
-  background-color: #555;
-  /* Más claro al pasar el cursor */
-}
-
-.crear-partida form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  /* Espaciado entre elementos del formulario */
-}
+    background-color: #1f1f1f; /* Fondo oscuro para el formulario */
+    color: #ffffff; /* Texto claro */
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 0 auto; /* Centrar horizontalmente */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+  }
+  
+  .crear-partida h2 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    text-align: center;
+    color: #ff9800; /* Naranja para destacar el título */
+  }
+  
+  .crear-partida label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ffffff; /* Texto del label */
+  }
+  
+  .crear-partida .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    background-color: #2b2b2b; /* Fondo oscuro del input */
+    color: #ffffff; /* Texto claro */
+    border: 1px solid #444; /* Borde sutil */
+    border-radius: 5px;
+  }
+  
+  .crear-partida .input:focus {
+    border-color: #ff9800; /* Naranja para enfoque */
+    outline: none;
+    box-shadow: 0 0 5px #ff9800;
+  }
+  
+  .crear-partida .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .crear-partida .btn.primary {
+    background-color: #4caf50; /* Verde para el botón "Crear" */
+    color: white;
+  }
+  
+  .crear-partida .btn.primary:hover {
+    background-color: #66bb6a; /* Verde más claro al pasar el cursor */
+  }
+  
+  .crear-partida .btn.secondary {
+    background-color: #444; /* Gris oscuro para "Cerrar" */
+    color: #ffffff;
+  }
+  
+  .crear-partida .btn.secondary:hover {
+    background-color: #555; /* Más claro al pasar el cursor */
+  }
+  
+  .crear-partida form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espaciado entre elementos del formulario */
+  }

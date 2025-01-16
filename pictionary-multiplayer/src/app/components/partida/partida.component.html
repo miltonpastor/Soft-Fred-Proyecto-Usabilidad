@@ -18,8 +18,15 @@
 
     <!-- Center Panel: Drawing Area -->
     <div class="drawing-area">
-      <canvas id="canvas" width="1280" height="580" (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)"
-        (mouseup)="onMouseUp($event)" (mouseleave)="onMouseLeave($event)"></canvas>
+      <canvas
+        id="canvas"
+        width="600"
+        height="400"
+        (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)"
+        (mouseup)="onMouseUp($event)"
+        (mouseleave)="onMouseLeave($event)"
+      ></canvas>
       <div class="canvas-controls">
         <!-- Selección de color -->
         <div class="palette">
@@ -45,10 +52,13 @@
           <p>{{ mensaje }}</p>
         </div>
       </div>
-      <div class="sender">
-        <input type="text" [(ngModel)]="mensajeChat" class="input" placeholder="Escribe aquí" />
-        <button (click)="enviarMensajeChat()">Enviar</button>
-      </div>
+      <input
+        type="text"
+        [(ngModel)]="mensajeChat"
+        class="input"
+        placeholder="Escribe aquí"
+      />
+      <button (click)="enviarMensajeChat()">Enviar</button>
     </div>
   </div>
 </div>

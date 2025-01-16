@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CrearPartidaComponent } from './components/crear-partida/crear-partida.component';
 import { UnirsePartidaComponent } from './components/unirse-partida/unirse-partida.component';
 import { PartidaComponent } from './components/partida/partida.component';
+import { AudioModalComponent } from './components/audio-modal/audio-modal.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PartidaComponent } from './components/partida/partida.component';
     ResumenComponent,
     CrearPartidaComponent,
     UnirsePartidaComponent,
-    PartidaComponent    
+    PartidaComponent,
+    AudioModalComponent    
   ],
   imports: [
     BrowserModule,
