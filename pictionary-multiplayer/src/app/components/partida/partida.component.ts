@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PartidaService } from '../../services/partida.service';
 import { Subscription } from 'rxjs';
 import { Partida } from '../../models/partida.model';
+import { Mensaje } from '../../models/mensaje.model';
 
 @Component({
   selector: 'app-partida',
@@ -24,7 +25,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
   // Para el chat y mensajes
   mensajeChat: string = '';
-  mensajes: string[] = [];  // Aquí almacenamos los mensajes de chat
+  mensajes: Mensaje[] = [];  // Aquí almacenamos los mensajes de chat
 
   // Variables de la interfaz de la partida
   mensajeTurno: string = '';
@@ -72,24 +73,39 @@ export class PartidaComponent implements OnInit, OnDestroy {
     );
   }
 
+
+
+  //----------------------CHAT----------------------------
+
   // Escuchar mensajes de chat
   iniciarEscucharChat(): void {
     this.partidaSubscription.add(
-      this.partidaService.escucharChat().subscribe((mensaje: string) => {
-        this.mensajes.push(mensaje); // Añadir el mensaje al historial del chat
-        console.log('Mensaje recibido:', this.mensajes);
+      this.partidaService.escucharChat().subscribe({
+        next: (data: Mensaje) => {
+          this.mensajes.push(data)
+          console.log('estos son los datos',this.mensajes)
 
+        },
+        error: (err) => console.log(err)
       })
     );
   }
 
   // Enviar un mensaje de chat
-  enviarMensajeChat(): void {
-    if (this.mensajeChat.trim()) {
-      this.partidaService.enviarMensajeChat(this.codigoPartida, this.mensajeChat);
-      this.mensajeChat = ''; // Limpiar el campo del mensaje después de enviarlo
+  enviarMensajeChat(mensaje: string = ''): void {
+    console.log('Aquí emitiendo valores al enviar mensaje');
+
+    // Usar el parámetro `mensaje` si está definido
+    const mensajeAEnviar = mensaje.trim() || this.mensajeChat.trim();
+
+    this.partidaService.enviarMensajeChat(this.codigoPartida, this.nombreJugador, mensajeAEnviar);
+
+    // Limpiar el campo
+    if (!mensaje.trim()) {
+      this.mensajeChat = '';  
     }
   }
+
 
   // Adivinar la palabra
   adivinarPalabra(intento: string): void {

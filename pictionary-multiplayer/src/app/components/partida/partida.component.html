@@ -23,11 +23,17 @@
     <div class="panel-right">
       <div class="chat-box">
         <div *ngFor="let mensaje of mensajes" class="chat-message">
-          <p>{{ mensaje }}</p>
+          @if (mensaje.mensaje === 'ha creado la partida' || mensaje.mensaje === 'ha ingresado a la partida') {
+            <p class="mensaje-ingreso" >{{mensaje.nombre_jugador}} {{ mensaje.mensaje }} </p>
+          } @else {
+            <p>{{mensaje.nombre_jugador}}: {{ mensaje.mensaje }}</p>
+          }
         </div>
       </div>
       <input type="text" [(ngModel)]="mensajeChat" class="input" placeholder="Escribe aquí" />
       <button (click)="enviarMensajeChat()">Enviar</button>
     </div>
+
+
   </div>
 </div>

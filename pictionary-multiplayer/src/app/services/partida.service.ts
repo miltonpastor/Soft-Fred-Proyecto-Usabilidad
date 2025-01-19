@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { Partida } from '../models/partida.model';
+import { Mensaje } from '../models/mensaje.model';
 
 @Injectable({
   providedIn: 'root'
@@ -111,14 +112,37 @@ export class PartidaService {
     this.socket.disconnect();
   }
 
-  // Escuchar los mensajes de chat
-  escucharChat() {
-    return new Observable<string>(observer => {
-      this.socket.on('obtener_mensajes', (data: { mensaje: string }) => {
-        observer.next(data.mensaje);
+
+  //------------CHAT----------
+
+  // Obtener todos los mensjes del chat
+  obtenerMensajesChat(codigoPartida: string) {
+    return new Observable<Mensaje[]>(observer => {
+      // Pasar el codigo de la partida
+      this.socket.emit('obtener_todo_chat', codigoPartida)
+
+      // Escuchar los mensajes
+      this.socket.on('todo_chat', (data: Mensaje[]) => {
+        observer.next(data); // Emitir los datos recibidos
+        observer.complete(); // Completar el Observable después de emitir
       });
     });
   }
+
+  // Escuchar los mensajes de chat
+  escucharChat() {
+    return new Observable<Mensaje>(observer => {
+      this.socket.on('mensaje_chat', (data: { nombre_jugador: string, mensaje: string }) => {
+        observer.next(data); // Emitir todo el objeto `data`
+      });
+    });
+  }
+  // Enviar mensaje de chat
+  enviarMensajeChat(codigoPartida: string, nombre: string, mensaje: string): void {
+    this.socket.emit('adivinar', codigoPartida, nombre, mensaje ); //a def adivinar
+  }
+  //-----------------------------
+
 
   // En el servicio, escucha los cambios de jugadores (unión a la partida)
   escucharUnirsePartida(): Observable<string[]> {
@@ -144,11 +168,6 @@ export class PartidaService {
         }
       });
     });
-  }
-
-  // Enviar mensaje de chat
-  enviarMensajeChat(codigoPartida: string, mensaje: string): void {
-    this.socket.emit('enviar_mensaje', { codigo_partida: codigoPartida, mensaje });
   }
 
 
