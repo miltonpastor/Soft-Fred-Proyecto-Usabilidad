@@ -5,16 +5,12 @@ import random
 import time
 
 app = Flask(__name__)
-socketio = SocketIO(app)
-
-app = Flask(__name__)
 CORS(app)  # Permitir CORS para todas las rutas
-
-socketio = SocketIO(app, cors_allowed_origins="*")  # Especificar el origen de tu frontend
-
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
 
 # Diccionario para manejar las partidas
 partidas = {}
+
 
 # Función para crear un código de partida único
 def generar_codigo():
@@ -97,7 +93,7 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'lista': f'{partida['jugadores']}'}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': f'{partida["jugadores"]}'}, room=codigo_partida)
     print(partida['jugadores'])
     
 # Evento para iniciar una ronda
@@ -123,13 +119,18 @@ def iniciar_ronda(codigo_partida):
 
 # Evento para manejar los dibujos en tiempo real
 @socketio.on('actualizar_dibujo')
-def actualizar_dibujo(codigo_partida, dibujo):
+def actualizar_dibujo(data):
+    codigo_partida = data["codigo_partida"]
+    dibujo = data["dibujo"]
+
+
     if codigo_partida not in partidas:
         return
-
     partida = partidas[codigo_partida]
-    if partida['estado'] != 'jugando' or partida['turno'] != request.sid:
-        return
+    # if partida['estado'] != 'jugando' or partida['turno'] != request.sid:
+    #     return
+    
+    print("paso 2")
 
     partida['dibujo'] = dibujo
     emit('actualizar_dibujo', {'dibujo': dibujo}, room=codigo_partida)
@@ -177,4 +178,4 @@ def agregarMensaje(nombre_jugador, mensaje, partida):
 
 # Empezar el servidor
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
