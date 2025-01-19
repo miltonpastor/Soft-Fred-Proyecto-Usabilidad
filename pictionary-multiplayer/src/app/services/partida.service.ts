@@ -72,7 +72,7 @@ export class PartidaService {
   unirseASala(codigoPartida: string, nombreJugador: string): void {
     this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador);
   }
-  
+
   // Salir de la sala
   salirDeSala(codigoPartida: string): void {
     this.socket.emit('salir_partida_socket', codigoPartida);
@@ -119,46 +119,48 @@ export class PartidaService {
     this.socket.disconnect();
   }
 
-// Escuchar los mensajes de chat
-escucharChat() {
-  return new Observable<string>(observer => {
-    this.socket.on('mensaje_chat', (data: { mensaje: string }) => {
-      observer.next(data.mensaje);
+  //------------CHAT----------
+  // Escuchar los mensajes de chat
+  escucharChat() {
+    return new Observable<string>(observer => {
+      this.socket.on('mensaje_chat', (data: { mensaje: string }) => {
+        console.log('Observable mensjae_chat')
+        observer.next(data.mensaje);
+      });
     });
-  });
-}
+  }
+  // Enviar mensaje de chat
+  enviarMensajeChat(codigoPartida: string, mensaje: string): void {
+    this.socket.emit('adivinar', codigoPartida, mensaje ); //a def adivinar
+  }
+  //-----------------------------
 
-// En el servicio, escucha los cambios de jugadores (unión a la partida)
-escucharUnirsePartida(): Observable<string[]> {
-  return new Observable<string[]>(observer => {
-    this.socket.on('actualizar_jugadores', (response: { lista: string }) => {
-      try {
-        // Si la lista está en formato JSON (como un array de jugadores)
-        const jugadores = JSON.parse(response.lista);
 
-        // Si la respuesta es una lista de jugadores, emítela
-        if (Array.isArray(jugadores)) {
+  // En el servicio, escucha los cambios de jugadores (unión a la partida)
+  escucharUnirsePartida(): Observable<string[]> {
+    return new Observable<string[]>(observer => {
+      this.socket.on('actualizar_jugadores', (response: { lista: string }) => {
+        try {
+          // Si la lista está en formato JSON (como un array de jugadores)
+          const jugadores = JSON.parse(response.lista);
+
+          // Si la respuesta es una lista de jugadores, emítela
+          if (Array.isArray(jugadores)) {
+            observer.next(jugadores);
+          } else {
+            // Si no es un array, muestra un error o maneja el caso
+            observer.error('La respuesta no contiene una lista válida de jugadores');
+          }
+        } catch (error) {
+          // Si ocurre un error al intentar parsear, puedes dividir el string o manejarlo de otra manera
+          console.error('Error al parsear la lista de jugadores', error);
+          // Si el formato es un string separado por comas, podemos dividirlo en un array
+          const jugadores = response.lista.split(',').map(jugador => jugador.trim());
           observer.next(jugadores);
-        } else {
-          // Si no es un array, muestra un error o maneja el caso
-          observer.error('La respuesta no contiene una lista válida de jugadores');
         }
-      } catch (error) {
-        // Si ocurre un error al intentar parsear, puedes dividir el string o manejarlo de otra manera
-        console.error('Error al parsear la lista de jugadores', error);
-        // Si el formato es un string separado por comas, podemos dividirlo en un array
-        const jugadores = response.lista.split(',').map(jugador => jugador.trim());
-        observer.next(jugadores);
-      }
+      });
     });
-  });
-}
-
-// Enviar mensaje de chat
-enviarMensajeChat(codigoPartida: string, mensaje: string): void {
-  this.socket.emit('mensaje_chat', { codigoPartida, mensaje });
-}
-
+  }
 
 
 }

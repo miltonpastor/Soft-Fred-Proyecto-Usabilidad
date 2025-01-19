@@ -92,22 +92,35 @@ export class PartidaComponent implements OnInit, OnDestroy {
     );
   }
 
+
+
+  //----------------------CHAT----------------------------
   // Escuchar mensajes de chat
   iniciarEscucharChat(): void {
+    console.log('Aqui emitiendo valores Inicales')
+
     this.partidaSubscription.add(
-      this.partidaService.escucharChat().subscribe((mensaje: string) => {
-        this.mensajes.push(mensaje); // Añadir el mensaje al historial del chat
+      this.partidaService.escucharChat().subscribe({
+        next: (mensaje: string) => {
+          console.log('Suscrito')
+          this.mensajes.push(mensaje); // Añadir el mensaje al historial del chat
+        },
+        error: (err) => console.log(err)
       })
     );
   }
 
   // Enviar un mensaje de chat
   enviarMensajeChat(): void {
+    console.log('Aqui emitiendo valores al enviar mensaje')
+
     if (this.mensajeChat.trim()) {
       this.partidaService.enviarMensajeChat(this.codigoPartida, this.mensajeChat);
       this.mensajeChat = ''; // Limpiar el campo del mensaje después de enviarlo
     }
   }
+
+  //---------------------------------------------------
 
   // Usar el borrador
   useEraser(): void {

@@ -136,14 +136,21 @@ def actualizar_dibujo(codigo_partida, dibujo):
 # Evento para manejar los intentos de adivinanza
 @socketio.on('adivinar')
 def adivinar(codigo_partida, intento):
+
     if codigo_partida not in partidas:
         return
+    
+    
+    print('Corriendo funcion adivinar', codigo_partida)
 
-    partida = partidas[codigo_partida]
-    if intento.lower() == partida['palabra'].lower():
+    partida = partidas[codigo_partida] # Obtenemos los datos de la partida
+    #comprobar si el intento (palabra ingresada) es igual a la palabra a adivinar (partida['palabra']) 
+    if intento.lower() == partida['palabra'].lower():  
         emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
         partida['adivinanza'] = intento
-    emit('mensaje_chat', {'mensaje': f'{request.sid} ha intentado adivinar la palabra'}, room=codigo_partida)
+    emit('mensaje_chat', {'mensaje': intento}, room=codigo_partida)
+
+
         # Aquí puedes agregar la lógica de finalizar la ronda si la palabra es adivinada
 
 # Empezar el servidor
