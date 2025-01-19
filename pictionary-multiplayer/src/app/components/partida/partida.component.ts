@@ -46,6 +46,20 @@ export class PartidaComponent implements OnInit, OnDestroy {
       this.nombreJugador = params['nombre_jugador'] || '';
     });
 
+
+    //Obtener todos los mensajes de chat (para jugadores que se unan despues)
+    this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({
+      next: (data: Mensaje[]) => {
+        if(data.length === 0){
+          this.enviarMensajeChat('ha creado la partida')
+        }else{
+          this.mensajes = data
+          this.enviarMensajeChat('ha ingresado a la partida')
+        }
+        console.log("Enviando el historial",this.mensajes)
+      }
+    });
+
     // Escuchar los jugadores y el chat en tiempo real
     this.iniciarEscucharPartida();
     this.iniciarEscucharChat();
