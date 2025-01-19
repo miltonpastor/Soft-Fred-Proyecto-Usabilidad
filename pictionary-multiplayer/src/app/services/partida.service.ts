@@ -43,14 +43,16 @@ export class PartidaService {
   }
 
   // Emitir un dibujo en tiempo real
-  actualizarDibujo(codigoPartida: string, dibujo: string): void {
-    this.socket.emit('actualizar_dibujo', codigoPartida, dibujo);
+  actualizarDibujo(codigo_partida: string, dibujo: string): void {
+    this.socket.emit('actualizar_dibujo', { codigo_partida, dibujo });
   }
 
-  // Recibir actualizaciones del dibujo
-  recibirDibujo(callback: (dibujo: string) => void): void {
-    this.socket.on('actualizar_dibujo', (data: { dibujo: string }) => {
-      callback(data.dibujo);
+  // Escuchar actualizaciones de dibujo
+  escucharDibujo(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('actualizar_dibujo', (data: any) => {
+        observer.next(data);
+      });
     });
   }
 
@@ -101,16 +103,6 @@ export class PartidaService {
       });
     });
   }
-
-  // Escuchar actualizaciones de dibujo
-  escucharDibujo() {
-    return new Observable<any>(observer => {
-      this.socket.on('actualizar_dibujo', (data: any) => {
-        observer.next(data);
-      });
-    });
-  }
-
   // Salir de la sala
   salir() {
     this.socket.disconnect();
@@ -119,6 +111,7 @@ export class PartidaService {
     // Cerrar la conexión cuando el servicio se destruya
     this.socket.disconnect();
   }
+
 
   //------------CHAT----------
 
@@ -176,6 +169,7 @@ export class PartidaService {
       });
     });
   }
+
 
 
 }
