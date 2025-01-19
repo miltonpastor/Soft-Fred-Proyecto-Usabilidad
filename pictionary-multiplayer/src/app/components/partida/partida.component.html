@@ -17,33 +17,7 @@
     </div>
 
     <!-- Center Panel: Drawing Area -->
-    <div class="drawing-area">
-      <canvas
-        id="canvas"
-        width="600"
-        height="400"
-        (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event)"
-        (mouseup)="onMouseUp($event)"
-        (mouseleave)="onMouseLeave($event)"
-      ></canvas>
-      <div class="canvas-controls">
-        <!-- Selección de color -->
-        <div class="palette">
-          <button style="background-color: #ff0000;" (click)="setColor('#ff0000')"></button>
-          <button style="background-color: #00ff00;" (click)="setColor('#00ff00')"></button>
-          <button style="background-color: #0000ff;" (click)="setColor('#0000ff')"></button>
-          <button style="background-color: #000000;" (click)="setColor('#000000')"></button>
-          <input type="color" (change)="handleColorChange($event)" />
-        </div>
-        <!-- Tamaño de pincel -->
-        <input type="range" min="1" max="20" value="5" (input)="changeBrushSize($event)" />
-        <!-- Controles básicos -->
-        <button (click)="useEraser()">✏️ Borrar</button>
-        <button (click)="undo()">↩️ Deshacer</button>
-        <button (click)="redo()">↪️ Rehacer</button>
-      </div>
-    </div>
+    <app-drawing-area [codigoPartida]="codigoPartida"></app-drawing-area>
 
     <!-- Right Panel: Chat -->
     <div class="panel-right">
@@ -52,12 +26,7 @@
           <p>{{ mensaje }}</p>
         </div>
       </div>
-      <input
-        type="text"
-        [(ngModel)]="mensajeChat"
-        class="input"
-        placeholder="Escribe aquí"
-      />
+      <input type="text" [(ngModel)]="mensajeChat" class="input" placeholder="Escribe aquí" />
       <button (click)="enviarMensajeChat()">Enviar</button>
     </div>
   </div>

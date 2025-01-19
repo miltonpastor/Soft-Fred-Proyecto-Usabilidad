@@ -11,6 +11,8 @@ import { CrearPartidaComponent } from './components/crear-partida/crear-partida.
 import { UnirsePartidaComponent } from './components/unirse-partida/unirse-partida.component';
 import { PartidaComponent } from './components/partida/partida.component';
 import { AudioModalComponent } from './components/audio-modal/audio-modal.component';
+import { DrawingAreaComponent } from './components/drawing-area/drawing-area.component';
+
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { AudioModalComponent } from './components/audio-modal/audio-modal.compon
     CrearPartidaComponent,
     UnirsePartidaComponent,
     PartidaComponent,
-    AudioModalComponent    
+    AudioModalComponent,
+    DrawingAreaComponent
   ],
   imports: [
     BrowserModule,

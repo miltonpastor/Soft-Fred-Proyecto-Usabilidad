@@ -5,16 +5,12 @@ import random
 import time
 
 app = Flask(__name__)
-socketio = SocketIO(app)
-
-app = Flask(__name__)
 CORS(app)  # Permitir CORS para todas las rutas
-
-socketio = SocketIO(app, cors_allowed_origins="*")  # Especificar el origen de tu frontend
-
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
 
 # Diccionario para manejar las partidas
 partidas = {}
+
 
 # Función para crear un código de partida único
 def generar_codigo():
@@ -44,6 +40,7 @@ def crear_partida():
         'palabra': "",
         'dibujo': "",
         'adivinanza': "",
+        'mensajes': [],
         'turno': None,  # El jugador que está dibujando
         'codigo_partida': codigo_partida
     }
@@ -96,7 +93,7 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'lista': f'{partida['jugadores']}'}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': f'{partida["jugadores"]}'}, room=codigo_partida)
     print(partida['jugadores'])
     
 # Evento para iniciar una ronda
@@ -122,30 +119,63 @@ def iniciar_ronda(codigo_partida):
 
 # Evento para manejar los dibujos en tiempo real
 @socketio.on('actualizar_dibujo')
-def actualizar_dibujo(codigo_partida, dibujo):
+def actualizar_dibujo(data):
+    codigo_partida = data["codigo_partida"]
+    dibujo = data["dibujo"]
+
+
     if codigo_partida not in partidas:
         return
-
     partida = partidas[codigo_partida]
-    if partida['estado'] != 'jugando' or partida['turno'] != request.sid:
-        return
+    # if partida['estado'] != 'jugando' or partida['turno'] != request.sid:
+    #     return
+    
+    print("paso 2")
 
     partida['dibujo'] = dibujo
     emit('actualizar_dibujo', {'dibujo': dibujo}, room=codigo_partida)
 
+#-------------------CHAT--------------------
 # Evento para manejar los intentos de adivinanza
 @socketio.on('adivinar')
-def adivinar(codigo_partida, intento):
+def adivinar(codigo_partida,nombre, intento ):
+    if codigo_partida not in partidas:
+        return
+    
+    
+    print('Corriendo funcion adivinar', codigo_partida)
+
+    partida = partidas[codigo_partida] # Obtenemos los datos de la partida
+    #comprobar si el intento (palabra ingresada) es igual a la palabra a adivinar (partida['palabra']) 
+    if intento.lower() == partida['palabra'].lower():  
+        emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
+        partida['adivinanza'] = intento
+
+    agregarMensaje(nombre, intento, partida);
+    emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': intento } , room=codigo_partida)
+
+
+        # Aquí puedes agregar la lógica de finalizar la ronda si la palabra es adivinada
+
+# Evento que devuelve todo el chat
+@socketio.on('obtener_todo_chat')
+def obtener_todo_chat(codigo_partida):
+
     if codigo_partida not in partidas:
         return
 
     partida = partidas[codigo_partida]
-    if intento.lower() == partida['palabra'].lower():
-        emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
-        partida['adivinanza'] = intento
-    emit('mensaje_chat', {'mensaje': f'{request.sid} ha intentado adivinar la palabra'}, room=codigo_partida)
-        # Aquí puedes agregar la lógica de finalizar la ronda si la palabra es adivinada
+    emit('todo_chat', list(partida['mensajes']) ,room= codigo_partida)
+
+
+# Función para agregar mensajes
+def agregarMensaje(nombre_jugador, mensaje, partida):
+    # Al agregar un mensaje
+    partida['mensajes'].append({'nombre_jugador': nombre_jugador, 'mensaje': mensaje})
+
+# ------------------------------------------------
+
 
 # Empezar el servidor
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
