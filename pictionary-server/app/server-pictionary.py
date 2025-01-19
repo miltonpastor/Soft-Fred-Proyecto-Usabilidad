@@ -44,6 +44,7 @@ def crear_partida():
         'palabra': "",
         'dibujo': "",
         'adivinanza': "",
+        'mensajes': [],
         'turno': None,  # El jugador que está dibujando
         'codigo_partida': codigo_partida
     }
@@ -133,10 +134,10 @@ def actualizar_dibujo(codigo_partida, dibujo):
     partida['dibujo'] = dibujo
     emit('actualizar_dibujo', {'dibujo': dibujo}, room=codigo_partida)
 
+#-------------------CHAT--------------------
 # Evento para manejar los intentos de adivinanza
 @socketio.on('adivinar')
-def adivinar(codigo_partida, intento):
-
+def adivinar(codigo_partida,nombre, intento ):
     if codigo_partida not in partidas:
         return
     
@@ -148,10 +149,31 @@ def adivinar(codigo_partida, intento):
     if intento.lower() == partida['palabra'].lower():  
         emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
         partida['adivinanza'] = intento
-    emit('mensaje_chat', {'mensaje': intento}, room=codigo_partida)
+
+    agregarMensaje(nombre, intento, partida);
+    emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': intento } , room=codigo_partida)
 
 
         # Aquí puedes agregar la lógica de finalizar la ronda si la palabra es adivinada
+
+# Evento que devuelve todo el chat
+@socketio.on('obtener_todo_chat')
+def obtener_todo_chat(codigo_partida):
+
+    if codigo_partida not in partidas:
+        return
+
+    partida = partidas[codigo_partida]
+    emit('todo_chat', list(partida['mensajes']) ,room= codigo_partida)
+
+
+# Función para agregar mensajes
+def agregarMensaje(nombre_jugador, mensaje, partida):
+    # Al agregar un mensaje
+    partida['mensajes'].append({'nombre_jugador': nombre_jugador, 'mensaje': mensaje})
+
+# ------------------------------------------------
+
 
 # Empezar el servidor
 if __name__ == '__main__':

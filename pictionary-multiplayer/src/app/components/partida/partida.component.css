@@ -3,7 +3,7 @@
     flex-direction: column;
     height: 100vh;
     background-color: #1e1e1e;
-    
+
     color: #fff;
     font-family: Arial, sans-serif;
 }
@@ -154,4 +154,8 @@ button:disabled {
     background-color: #555;
     cursor: not-allowed;
     color: #888;
+}
+
+.mensaje-ingreso {
+  color: #55ce46;
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PartidaService } from '../../services/partida.service';
 import { Subscription } from 'rxjs';
 import { Partida } from '../../models/partida.model';
+import { Mensaje } from '../../models/mensaje.model';
 
 @Component({
   selector: 'app-partida',
@@ -24,7 +25,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
   // Para el chat y mensajes
   mensajeChat: string = '';
-  mensajes: string[] = [];  // Aquí almacenamos los mensajes de chat
+  mensajes: Mensaje[] = [];  // Aquí almacenamos los mensajes de chat
 
   // Variables de la interfaz de la partida
   dibujo: string = '';
@@ -66,6 +67,19 @@ export class PartidaComponent implements OnInit, OnDestroy {
       console.error('Canvas no encontrado.');
     }
 
+    //Obtener todos los mensajes de chat (para jugadores que se unan despues)
+    this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({
+      next: (data: Mensaje[]) => {
+        if(data.length === 0){
+          this.enviarMensajeChat('ha creado la partida')
+        }else{
+          this.mensajes = data
+          this.enviarMensajeChat('ha ingresado a la partida')
+        }
+        console.log("Enviando el historial",this.mensajes)
+      }
+    });
+
     // Escuchar los jugadores y el chat en tiempo real
     this.iniciarEscucharPartida();
     this.iniciarEscucharChat();
@@ -95,15 +109,15 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
 
   //----------------------CHAT----------------------------
+
   // Escuchar mensajes de chat
   iniciarEscucharChat(): void {
-    console.log('Aqui emitiendo valores Inicales')
-
     this.partidaSubscription.add(
       this.partidaService.escucharChat().subscribe({
-        next: (mensaje: string) => {
-          console.log('Suscrito')
-          this.mensajes.push(mensaje); // Añadir el mensaje al historial del chat
+        next: (data: Mensaje) => {
+          this.mensajes.push(data)
+          console.log('estos son los datos',this.mensajes)
+
         },
         error: (err) => console.log(err)
       })
@@ -111,14 +125,20 @@ export class PartidaComponent implements OnInit, OnDestroy {
   }
 
   // Enviar un mensaje de chat
-  enviarMensajeChat(): void {
-    console.log('Aqui emitiendo valores al enviar mensaje')
+  enviarMensajeChat(mensaje: string = ''): void {
+    console.log('Aquí emitiendo valores al enviar mensaje');
 
-    if (this.mensajeChat.trim()) {
-      this.partidaService.enviarMensajeChat(this.codigoPartida, this.mensajeChat);
-      this.mensajeChat = ''; // Limpiar el campo del mensaje después de enviarlo
+    // Usar el parámetro `mensaje` si está definido
+    const mensajeAEnviar = mensaje.trim() || this.mensajeChat.trim();
+
+    this.partidaService.enviarMensajeChat(this.codigoPartida, this.nombreJugador, mensajeAEnviar);
+
+    // Limpiar el campo
+    if (!mensaje.trim()) {
+      this.mensajeChat = '';  
     }
   }
+
 
   //---------------------------------------------------
 
