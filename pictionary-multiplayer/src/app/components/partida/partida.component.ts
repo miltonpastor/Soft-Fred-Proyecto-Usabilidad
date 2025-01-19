@@ -15,6 +15,8 @@ export class PartidaComponent implements OnInit, OnDestroy {
   codigoPartida: string = '';
   nombreJugador: string = '';
   nombreAnfitrion: string = '';
+  palabraAdivinar: string = 'Palabra';
+
   intento: string = '';
   tiempoPorRonda: number = 30;  // Ejemplo de valor
   jugadores: string[] = []; // Aquí almacenamos la lista de jugadores
@@ -135,7 +137,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
     // Limpiar el campo
     if (!mensaje.trim()) {
-      this.mensajeChat = '';  
+      this.mensajeChat = '';
     }
   }
 

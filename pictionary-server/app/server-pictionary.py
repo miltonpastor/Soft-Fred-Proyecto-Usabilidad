@@ -41,7 +41,7 @@ def crear_partida():
         'tiempo_por_ronda': tiempo_por_ronda,
         'ronda_actual': 0,
         'estado': 'esperando',  # puede ser 'esperando', 'jugando', 'finalizado'
-        'palabra': "",
+        'palabra': "palabra para adivinar test",
         'dibujo': "",
         'adivinanza': "",
         'mensajes': [],
@@ -147,8 +147,12 @@ def adivinar(codigo_partida,nombre, intento ):
     partida = partidas[codigo_partida] # Obtenemos los datos de la partida
     #comprobar si el intento (palabra ingresada) es igual a la palabra a adivinar (partida['palabra']) 
     if intento.lower() == partida['palabra'].lower():  
-        emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
+        #emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
+        emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': 'ha adivinado la palabra' } , room=codigo_partida)
         partida['adivinanza'] = intento
+        return 
+    
+    print('Palabra a adivinar', partida['palabra'])
 
     agregarMensaje(nombre, intento, partida);
     emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': intento } , room=codigo_partida)
