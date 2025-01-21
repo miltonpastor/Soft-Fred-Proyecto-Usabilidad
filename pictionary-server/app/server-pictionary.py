@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS  # Importar CORS
+from palabras import palabras
 import random
 import time
 
@@ -18,7 +19,7 @@ def generar_codigo():
 
 # Función para generar opciones de palabras
 def obtener_palabras():
-    return ["casa", "gato", "avión", "pelota", "árbol", "flor", "ratón", "nube"]
+    return palabras
 
 # Ruta para crear una partida
 @app.route('/crear_partida', methods=['POST'])
@@ -108,14 +109,45 @@ def iniciar_ronda(codigo_partida):
         emit('error', {'mensaje': 'La partida no está en estado de juego'})
         return
 
-    # Elegir una palabra para el dibujante
-    palabra = random.choice(obtener_palabras())
-    partida['palabra'] = palabra
+    # Elegir tres palabras aleatorias
+    opciones_palabras = random.sample(obtener_palabras(), 3)
+
+    # Guardar las opciones en la partida para referencia posterior
+    partida['opciones_palabras'] = opciones_palabras
     partida['dibujo'] = ""  # Limpiar dibujo
     partida['adivinanza'] = ""
-    
-    # Enviar la palabra al jugador que debe dibujar
-    emit('tu_turno', {'palabra': palabra}, room=codigo_partida)
+
+    # Enviar las opciones al jugador que debe dibujar
+    emit('elegir_palabra', {'opciones': opciones_palabras}, room=partida['turno'])
+
+# Evento para elegir una palabra
+@socketio.on('elegir_palabra')
+def elegir_palabra(data):
+    codigo_partida = data['codigo_partida']
+    palabra_seleccionada = data['palabra']
+
+    if codigo_partida not in partidas:
+        emit('error', {'mensaje': 'Código de partida inválido'})
+        return
+
+    partida = partidas[codigo_partida]
+
+    # Verificar si la palabra seleccionada está entre las opciones
+    if palabra_seleccionada not in [opcion['palabra'] for opcion in partida['opciones_palabras']]:
+        emit('error', {'mensaje': 'Palabra inválida'})
+        return
+
+    # Establecer la palabra seleccionada como la palabra de la ronda
+    palabra_data = next(opcion for opcion in partida['opciones_palabras'] if opcion['palabra'] == palabra_seleccionada)
+    partida['palabra'] = palabra_data['palabra']
+    partida['descripcion'] = palabra_data['descripcion']
+    partida['imagen'] = palabra_data['imagen']
+
+    # Notificar a todos los jugadores que la ronda ha comenzado
+    emit('ronda_iniciada', {
+        'descripcion': palabra_data['descripcion'],
+        'imagen': palabra_data['imagen']
+    }, room=codigo_partida)
 
 # Evento para manejar los dibujos en tiempo real
 @socketio.on('actualizar_dibujo')
