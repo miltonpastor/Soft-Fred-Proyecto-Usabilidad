@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>Elige una Palabra</h1>
+  <div id="opciones-container">
+    <!-- Las palabras se generarán dinámicamente aquí -->
+    <div *ngFor="let opcion of opciones" class="opcion">
+      <img [src]="opcion.imagen" [alt]="opcion.palabra">
+      <h2>{{ opcion.palabra }}</h2>
+      <p>{{ opcion.descripcion }}</p>
+      <button (click)="seleccionarPalabra(opcion.palabra)">Elegir</button>
+    </div>
+  </div>
+</div>

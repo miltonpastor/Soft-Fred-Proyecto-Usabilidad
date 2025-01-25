@@ -49,6 +49,11 @@ def crear_partida():
 
     return jsonify({'partida': partidas[codigo_partida]}), 200
 
+@app.route('/palabras', methods=['GET'])
+def get_opciones_palabras_route():
+    opciones_palabras = random.sample(palabras, 3)
+    return jsonify({'opciones': opciones_palabras}), 200
+
 
 
 # Ruta para iniciar la partida

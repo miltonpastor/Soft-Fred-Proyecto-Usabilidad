@@ -1,0 +1,31 @@
+.container {
+    text-align: center;
+}
+
+.opcion {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.opcion img {
+    max-width: 100px;
+    height: auto;
+}
+
+.opcion h2 {
+    font-size: 1.5em;
+}
+
+.opcion p {
+    font-size: 1em;
+}
+
+.opcion button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 1em;
+}

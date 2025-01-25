@@ -12,6 +12,9 @@ import { UnirsePartidaComponent } from './components/unirse-partida/unirse-parti
 import { PartidaComponent } from './components/partida/partida.component';
 import { AudioModalComponent } from './components/audio-modal/audio-modal.component';
 import { DrawingAreaComponent } from './components/drawing-area/drawing-area.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
+import { SelectWordPageComponent } from './pages/select-word-page/select-word-page.component';
+import { GamePageComponent } from './pages/game-page/game-page.component';
 
 
 @NgModule({
@@ -23,7 +26,10 @@ import { DrawingAreaComponent } from './components/drawing-area/drawing-area.com
     UnirsePartidaComponent,
     PartidaComponent,
     AudioModalComponent,
-    DrawingAreaComponent
+    DrawingAreaComponent,
+    HomePageComponent,
+    SelectWordPageComponent,
+    GamePageComponent
   ],
   imports: [
     BrowserModule,

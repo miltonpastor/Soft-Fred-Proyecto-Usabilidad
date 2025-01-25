@@ -60,6 +60,11 @@ export class PartidaService {
     this.socket.emit('adivinar', codigoPartida, intento);
   }
 
+  getOpcionesPalabras(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/palabras`);
+  }
+
+
   // Recibir notificación cuando alguien acierta la palabra
   recibirAdivinanza(callback: (mensaje: string) => void): void {
     this.socket.on('acertado', (data: { mensaje: string }) => {
@@ -89,6 +94,12 @@ export class PartidaService {
       });
     });
   }
+
+
+  elegirPalabra(codigoPartida: string, palabra: string): void {
+    this.socket.emit('elegir_palabra', codigoPartida, palabra);
+  }
+
 
   // Iniciar la ronda
   iniciarRonda(codigoPartida: string) {
@@ -139,7 +150,7 @@ export class PartidaService {
   }
   // Enviar mensaje de chat
   enviarMensajeChat(codigoPartida: string, nombre: string, mensaje: string): void {
-    this.socket.emit('adivinar', codigoPartida, nombre, mensaje ); //a def adivinar
+    this.socket.emit('adivinar', codigoPartida, nombre, mensaje); //a def adivinar
   }
   //-----------------------------
 

@@ -85,9 +85,9 @@ export class InicioComponent {
   changeAvatar(direction: string) {
     console.log(`Cambio de avatar hacia: ${direction}`);
   }
-  
+
   randomizeAvatar() {
     console.log('Avatar aleatorio seleccionado');
   }
-  
+
 }
