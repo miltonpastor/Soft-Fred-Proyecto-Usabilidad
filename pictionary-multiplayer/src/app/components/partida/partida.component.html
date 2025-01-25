@@ -16,8 +16,16 @@
       </div>
     </div>
 
-    <!-- Center Panel: Drawing Area -->
-    <app-drawing-area [codigoPartida]="codigoPartida"></app-drawing-area>
+    <!-- Center Panel -->
+     <div class="central-panel">
+        @if (pantallaEspera) {
+          <!-- Pantalla de espera -->
+          <app-espera></app-espera>
+        }@else{
+          <!-- Drawing Area -->
+          <app-drawing-area [codigoPartida]="codigoPartida"></app-drawing-area>
+        }
+     </div>
 
     <!-- Right Panel: Chat -->
     <div class="panel-right">

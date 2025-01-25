@@ -33,6 +33,9 @@ export class PartidaComponent implements OnInit, OnDestroy {
   mensajeTurno: string = '';
   palabra: string = '';
 
+
+  pantallaEspera: boolean = true;
+
   constructor(
     private route: ActivatedRoute,
     private partidaService: PartidaService,

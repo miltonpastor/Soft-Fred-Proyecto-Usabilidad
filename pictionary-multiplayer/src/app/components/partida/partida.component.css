@@ -80,3 +80,9 @@
 .enviar-mensaje{
   padding: 3px 5px;
 }
+
+.central-panel{
+  flex: 1;
+  background-color: white;
+  border-radius: 4px;
+}

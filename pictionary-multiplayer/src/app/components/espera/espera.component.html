@@ -1,0 +1,49 @@
+<div class="waiting-contenedor">
+  <form [formGroup]="formOpciones" (ngSubmit)="iniciar()">
+    <div class="campo">
+      <label for="numeroPlayers">
+        <i class="bi bi-person-fill" style="font-size: 1.8rem; padding-right: 8px;"></i>
+        Jugadores
+      </label>
+      <select formControlName="numeroPlayers">
+        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+          <option [value]="item"> {{item}} </option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="tiempoDibujo">
+        <i class="bi bi-alarm-fill" style="font-size: 1.8rem;padding-right: 8px;"></i>
+        Tiempo de Dibujo
+      </label>
+      <select formControlName="tiempoDibujo">
+        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+          <option [value]="item"> {{item}} </option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="rondas">
+        <i class="bi bi-arrow-repeat" style="font-size: 1.8rem;padding-right: 8px;"></i>
+        Número de Rondas
+      </label>
+      <select formControlName="rondas">
+        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+          <option [value]="item"> {{item}} </option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="rondas">
+        <i class="bi bi-info" style="font-size: 1.8rem;padding-right: 8px;"></i>
+        Ayudas
+      </label>
+      <select formControlName="rondas" >
+        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+          <option [value]="item"> {{item}} </option>
+        }
+      </select>
+    </div>
+  </form>
+</div>
+
