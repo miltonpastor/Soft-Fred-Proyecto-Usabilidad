@@ -19,14 +19,14 @@ export class EsperaComponent {
   private formBuild(){
     this.formOpciones = this._formBuilder.group({
       numeroPlayers: [8],
-      tiempoDibujo: [80],
+      tiempoDibujo: [90],
       rondas: [3],
       ayudas: [2]
     })
   }
 
   iniciar(){
-
+    
   }
 
 }

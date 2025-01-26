@@ -1,49 +1,69 @@
-<div class="waiting-contenedor">
+<div class="waiting-contenedor container">
   <form [formGroup]="formOpciones" (ngSubmit)="iniciar()">
-    <div class="campo">
-      <label for="numeroPlayers">
+
+    <div class="campo row">
+      <label for="numeroPlayers" class="col-sm-12 col-md-5">
         <i class="bi bi-person-fill" style="font-size: 1.8rem; padding-right: 8px;"></i>
         Jugadores
       </label>
-      <select formControlName="numeroPlayers">
-        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+      <div class="col-sm-12 col-md-7">
+        <select formControlName="numeroPlayers">
+          @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
           <option [value]="item"> {{item}} </option>
-        }
-      </select>
+          }
+        </select>
+      </div>
     </div>
-    <div class="campo">
-      <label for="tiempoDibujo">
+
+    <div class="campo row">
+      <label for="tiempoDibujo" class="col-sm-12 col-md-5">
         <i class="bi bi-alarm-fill" style="font-size: 1.8rem;padding-right: 8px;"></i>
         Tiempo de Dibujo
       </label>
-      <select formControlName="tiempoDibujo">
-        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
-          <option [value]="item"> {{item}} </option>
-        }
-      </select>
+      <div class="col-sm-12 col-md-7">
+        <select formControlName="tiempoDibujo">
+          @for (item of [30,60,90,120,150]; track $index) {
+          <option [value]="item"> {{item}} segundos </option>
+          }
+        </select>
+      </div>
     </div>
-    <div class="campo">
-      <label for="rondas">
+
+    <div class="campo row">
+      <label for="rondas" class="col-sm-12 col-md-5">
         <i class="bi bi-arrow-repeat" style="font-size: 1.8rem;padding-right: 8px;"></i>
         Número de Rondas
       </label>
-      <select formControlName="rondas">
-        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+      <div class="col-sm-12 col-md-7">
+        <select formControlName="rondas">
+          @for (item of [2,3,4,5,6]; track $index) {
           <option [value]="item"> {{item}} </option>
-        }
-      </select>
+          }
+        </select>
+      </div>
     </div>
-    <div class="campo">
-      <label for="rondas">
+
+    <div class="campo row">
+      <label for="ayudas" class="col-sm-12 col-md-5">
         <i class="bi bi-info" style="font-size: 1.8rem;padding-right: 8px;"></i>
         Ayudas
       </label>
-      <select formControlName="rondas" >
-        @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
+      <div class="col-sm-12 col-md-7">
+        <select formControlName="ayudas">
+          @for (item of [0,1,2,3,4]; track $index) {
           <option [value]="item"> {{item}} </option>
-        }
-      </select>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-8 p-0">
+        <button class="boton-iniciar">¡Iniciar!</button>
+      </div>
+      <div class="col-sm-12 col-md-4 p-0">
+        <button class="boton-invitar">Invitar</button>
+      </div>
     </div>
   </form>
 </div>
-
