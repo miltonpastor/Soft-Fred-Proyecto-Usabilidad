@@ -1,53 +1,37 @@
-<div class="container bg-dark text-light py-5 rounded">
-  <div class="mb-4 text-center">
-    <input
-      [(ngModel)]="username"
-      name="username"
-      class="form-control mb-3 bg-secondary text-light"
-      placeholder="Ingresa tu nombre"
-      required
-    />
-
-    <div class="d-flex justify-content-center align-items-center mb-3">
-      <button (click)="changeAvatar('prev')" class="btn btn-outline-light me-2">
+<div class="container">
+  <div class="container-form">
+    <div class="container-avatar">
+      <button (click)="changeAvatar('prev')" aria-label="Avatar anterior" class="card-info" tabindex="0">
         ◀
       </button>
-      <div class="avatar-icon bg-secondary rounded-circle p-3 text-center">
-        👤
+      <div class="avatar" aria-label="Icono de avatar" tabindex="0">
+        {{selectedAvatar}}
       </div>
-      <button (click)="changeAvatar('next')" class="btn btn-outline-light ms-2">
+      <button (click)="changeAvatar('next')" aria-label="Siguiente avatar" tabindex="0">
         ▶
       </button>
-      <button class="btn btn-warning ms-3" (click)="randomizeAvatar()">🎲</button>
     </div>
-    <div class="text-center">
-      <button
-        class="btn btn-primary mx-2"
-        (click)="showCreateComponent()"
-        [disabled]="!username"
-      >
+    <div class="container-username">
+      <input [(ngModel)]="username" name="username" aria-label="Ingresa tu nombre" placeholder="Ingresa tu nombre"
+        required tabindex="0" />
+      <button (click)="randomizeAvatar()" aria-label="Avatar aleatorio" tabindex="0">🎲</button>
+
+    </div>
+
+    <div class="container-buttons">
+      <button (click)="showCreateComponent()" [disabled]="!username" aria-label="Crear Partida" tabindex="0">
         Crear Partida
       </button>
-      <button
-        class="btn btn-primary mx-2"
-        (click)="showJoinComponent()"
-        [disabled]="!username"
-      >
+      <button (click)="showJoinComponent()" [disabled]="!username" aria-label="Unirse a Partida" tabindex="0">
         Unirse a Partida
       </button>
     </div>
-  
-    <app-crear-partida
-      *ngIf="showCreate"
-      (partidaCreada)="onPartidaCreada($event)"
-      [nombreJugador]="username"
-    ></app-crear-partida>
-  
-    <app-unirse-partida
-      *ngIf="showJoin"
-      (partidaUnida)="onPartidaUnida($event)"
-      [nombreJugador]="username"
-    ></app-unirse-partida>
+
+    <app-crear-partida *ngIf="showCreate" (partidaCreada)="onPartidaCreada($event)"
+      [nombreJugador]="username"></app-crear-partida>
+
+    <app-unirse-partida *ngIf="showJoin" (partidaUnida)="onPartidaUnida($event)"
+      [nombreJugador]="username"></app-unirse-partida>
   </div>
 
   <!-- Modal -->
@@ -73,36 +57,30 @@
       </div>
     </div>
   </div>
+  <!-- info -->
+  <div class="container-info">
+    <div class="card-info" tabindex="0">
+      <h3>❓ Acerca de</h3>
+      <p>
+        Pictionary es un juego de adivinanzas donde un jugador dibuja y los
+        demás intentan adivinar. ¡Diviértete con tus amigos!
+      </p>
+    </div>
+    <div class="card-info" tabindex="0">
+      <h3>📰 Noticias</h3>
+      <p>
+        Mantente informado sobre las últimas actualizaciones, mejoras y
+        eventos del juego. ¡No te lo pierdas!
+      </p>
+    </div>
 
-  <div class="row text-center mb-4">
-    <div class="col-md-4">
-      <div class="card bg-secondary text-light p-3">
-        <h3 class="card-title">❓ Acerca de</h3>
-        <p class="card-text">
-          Pictionary es un juego de adivinanzas donde un jugador dibuja y los
-          demás intentan adivinar. ¡Diviértete con tus amigos!
-        </p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card bg-secondary text-light p-3">
-        <h3 class="card-title">📰 Noticias</h3>
-        <p class="card-text">
-          Mantente informado sobre las últimas actualizaciones, mejoras y
-          eventos del juego. ¡No te lo pierdas!
-        </p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card bg-secondary text-light p-3">
-        <h3 class="card-title">✏️ Cómo jugar</h3>
-        <p class="card-text">
-          Para comenzar, selecciona "Crear Partida" o "Unirse a Partida", luego
-          sigue las instrucciones para jugar.
-        </p>
-      </div>
+    <div class="card-info" tabindex="0">
+      <h3>✏️ Cómo jugar</h3>
+      <p>
+        Para comenzar, selecciona "Crear Partida" o "Unirse a Partida", luego
+        sigue las instrucciones para jugar.
+      </p>
     </div>
   </div>
 
-  
 </div>

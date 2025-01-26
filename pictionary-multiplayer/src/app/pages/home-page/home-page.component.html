@@ -1,20 +1,19 @@
-<div class="app-container d-flex flex-column min-vh-100 bg-dark text-light">
+<div class="homePage">
     <!-- Header -->
-    <header class="app-header bg-primary py-3 shadow-sm">
-        <div class="container text-center">
-            <h1 class="display-4 text-white fw-bold">JuegoEducación cultural y artistica</h1>
-            <p class="lead text-light">¡Dibuja, aprende y adivina con tus amigos en tiempo real!</p>
-            <!-- Reproductor de música de fondo (oculto) -->
+    <header>
+        <div class="header-section">
+            <h1 tabindex="0">Pincelada</h1>
+            <!-- Musica -->
             <div>
-                <audio #backgroundAudio src="assets/puzzle-game-bright-casual-video-game-music-249202.mp3"></audio>
+                <audio #backgroundAudio src="assets/puzzle-game-bright-casual-video-game-music-249202.mp3"
+                    aria-label="Background music"></audio>
             </div>
             <!-- Botón con estilos minimalistas -->
-            <button class="btn position-fixed end-0 top-0 p-3 m-3"
+            <button
                 style="font-size: 1.5rem; border-radius: 50%; background-color: transparent; border: none; color: black;"
-                (click)="openModal()">
-                <i class="bi bi-gear-fill"></i>
+                (click)="openModal()" aria-label="Open settings modal" tabindex="0">
+                <i class="bi bi-gear-fill" aria-hidden="true"></i>
             </button>
-
 
             <!-- Modal para controlar el volumen -->
             <app-audio-modal *ngIf="isModalOpen" [isMusicPlaying]="isMusicPlaying" [currentVolume]="currentVolume"
@@ -24,19 +23,17 @@
     </header>
 
     <!-- Main Content -->
-    <main class="app-main flex-grow-1 d-flex align-items-center justify-content-center">
-        <div class="container">
-            <app-inicio></app-inicio>
-        </div>
+    <main>
+        <app-inicio></app-inicio>
     </main>
 
     <!-- Footer -->
-    <footer class="app-footer bg-secondary py-3 text-center">
-        <div class="container">
-            <p class="mb-0">
-                &copy; 2023 <strong>Soft-fred</strong>. Todos los derechos reservados.
+    <footer>
+        <div>
+            <p tabindex="0">
+                &copy; 2025 <strong>Soft-fred</strong>. Todos los derechos reservados.
             </p>
-            <p class="small">
+            <p tabindex="0">
                 Diseñado para ofrecer la mejor experiencia multijugador.
             </p>
         </div>

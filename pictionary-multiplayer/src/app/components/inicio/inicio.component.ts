@@ -13,6 +13,8 @@ export class InicioComponent {
   showCreate: boolean = false;
   showJoin: boolean = false;
 
+  avatars: string[] = ['👤', '👩', '👨', '🧑', '👧', '👦', '🧓', '👴', '👵', '🧔', '👳', '👲', '🧕', '👮', '👷', '💂', '🕵️', '👩‍⚕️', '👨‍⚕️', '👩‍🌾', '👨‍🌾', '👩‍🍳', '👨‍🍳', '👩‍🎓', '👨‍🎓', '👩‍🎤', '👨‍🎤', '👩‍🏫', '👨‍🏫', '👩‍🏭', '👨‍🏭', '👩‍💻', '👨‍💻', '👩‍💼', '👨‍💼', '👩‍🔧', '👨‍🔧', '👩‍🔬', '👨‍🔬', '👩‍🎨', '👨‍🎨', '👩‍🚒', '👨‍🚒', '👩‍✈️', '👨‍✈️', '👩‍🚀', '👨‍🚀', '👩‍⚖️', '👨‍⚖️'];
+  selectedAvatar: string = this.avatars[0];
   codigoPartida: string | null = null;
   modalVisible: boolean = false;
   modalMessage: string | null = null; // Para almacenar el mensaje de éxito
@@ -60,7 +62,7 @@ export class InicioComponent {
   continueGame() {
     if (this.codigoPartida) {
       // Redirigir a la página de la partida con el código
-      this.router.navigate(['/partida'], {
+      this.router.navigate(['/palabra'], {
         queryParams: { codigo_partida: this.codigoPartida, nombre_jugador: this.username },
       });
     }
@@ -83,11 +85,18 @@ export class InicioComponent {
   }
 
   changeAvatar(direction: string) {
-    console.log(`Cambio de avatar hacia: ${direction}`);
+    const currentIndex = this.avatars.indexOf(this.selectedAvatar);
+    if (direction === 'prev') {
+      this.selectedAvatar = this.avatars[(currentIndex - 1 + this.avatars.length) % this.avatars.length];
+    } else if (direction === 'next') {
+      this.selectedAvatar = this.avatars[(currentIndex + 1) % this.avatars.length];
+    }
   }
 
   randomizeAvatar() {
-    console.log('Avatar aleatorio seleccionado');
+    const randomIndex = Math.floor(Math.random() * this.avatars.length);
+    this.selectedAvatar = this.avatars[randomIndex];
   }
+
 
 }
