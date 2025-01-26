@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PartidaService } from '../../services/partida.service';
 import { Subscription } from 'rxjs';
@@ -32,6 +32,9 @@ export class PartidaComponent implements OnInit, OnDestroy {
   // Variables de la interfaz de la partida
   mensajeTurno: string = '';
   palabra: string = '';
+
+
+  pantallaEspera: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -149,6 +152,47 @@ export class PartidaComponent implements OnInit, OnDestroy {
           this.errores.push('No se pudo iniciar la partida. Intenta nuevamente.');
         }
       });
+    }
+  }
+
+
+
+  @ViewChild('backgroundAudio', { static: true }) backgroundAudio!: ElementRef<HTMLAudioElement>;
+  isModalOpen = false;
+  isMusicPlaying = false;
+  currentVolume = 1;
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+  /**
+   * Cambiar el volumen de la música de fondo.
+   * @param volume Nivel de volumen (entre 0 y 1).
+   */
+  setVolume(volume: number) {
+    this.currentVolume = volume; // Guardar el volumen actual
+    this.backgroundAudio.nativeElement.volume = volume;
+  }
+
+  toggleBackgroundMusic(isPlaying: boolean) {
+    const audioElement = this.backgroundAudio.nativeElement;
+
+    if (isPlaying) {
+      audioElement.loop = true;
+      audioElement.play().then(() => {
+        this.isMusicPlaying = true;
+        console.log('Música de fondo activada.');
+      }).catch(error => {
+        console.error('Error al reproducir el audio:', error);
+      });
+    } else {
+      audioElement.pause();
+      this.isMusicPlaying = false;
+      console.log('Música de fondo desactivada.');
     }
   }
 

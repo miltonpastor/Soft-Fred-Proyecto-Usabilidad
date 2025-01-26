@@ -1,0 +1,51 @@
+.waiting-contenedor {
+  height: 100%;
+  padding: 20px;
+  background-color: #35394a; /* Nota: agregué el símbolo # para el color hexadecimal */
+  border-radius: 4px;
+
+  /* Agregar posición y z-index */
+  position: relative; /* Esto es necesario para que z-index funcione */
+  z-index: 10; /* Puedes usar el valor que necesites */
+}
+
+.campo {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.campo select {
+  cursor: pointer;
+  width: 100%;
+  height: 30px;
+  border: 1px solid #ccc;
+  /* Borde gris claro */
+  border-radius: 4px;
+  /* Bordes redondeados */
+}
+
+.campo label {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+
+.boton-iniciar {
+  background-color: #32AA1D;
+  color: white;
+  font-weight: 700;
+  font-size: 18.66px;
+  width: 100%;
+}
+
+.boton-invitar {
+  background-color: #1671c5;
+  color: white;
+  font-weight: 700;
+  font-size: 18.66px;
+  width: 100%;
+}
