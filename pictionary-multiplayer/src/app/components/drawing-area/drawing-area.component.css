@@ -17,11 +17,18 @@ canvas {
 }
 
 .canvas-controls {
+    max-width: 100%;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 8px;
     margin-top: 12px;
-    justify-content: center;
-    align-items: center;
+    /* align-items: center; */
+}
+
+.container-controls {
+    display: flex;
+    gap: 8px;
 }
 
 .palette {

@@ -1,21 +1,28 @@
-<!-- filepath: /src/app/drawing-area/drawing-area.component.html -->
 <div class="drawing-area">
-    <canvas #canvas id="canvas" width="600" height="400" (mousedown)="onMouseDown($event)"
-        (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp($event)" (mouseleave)="onMouseLeave($event)"></canvas>
+    <canvas width="700px" height="500px" #canvas id="canvas" (mousedown)="onMouseDown($event)"
+        (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp($event)" (mouseleave)="onMouseLeave($event)" tabindex="0"
+        aria-label="Drawing canvas"></canvas>
     <div class="canvas-controls">
         <!-- Selección de color -->
-        <div class="palette">
-            <button style="background-color: #ff0000;" (click)="setColor('#ff0000')"></button>
-            <button style="background-color: #00ff00;" (click)="setColor('#00ff00')"></button>
-            <button style="background-color: #0000ff;" (click)="setColor('#0000ff')"></button>
-            <button style="background-color: #000000;" (click)="setColor('#000000')"></button>
-            <input type="color" (change)="handleColorChange($event)" />
+        <div class="palette" aria-label="Color palette">
+            <button style="background-color: #ff0000;" (click)="setColor('#ff0000')" tabindex="0"
+                aria-label="Set color to red"></button>
+            <button style="background-color: #00ff00;" (click)="setColor('#00ff00')" tabindex="0"
+                aria-label="Set color to green"></button>
+            <button style="background-color: #0000ff;" (click)="setColor('#0000ff')" tabindex="0"
+                aria-label="Set color to blue"></button>
+            <button style="background-color: #000000;" (click)="setColor('#000000')" tabindex="0"
+                aria-label="Set color to black"></button>
+            <input type="color" (change)="handleColorChange($event)" tabindex="0" aria-label="Choose custom color" />
         </div>
         <!-- Tamaño de pincel -->
-        <input type="range" min="1" max="20" value="5" (input)="changeBrushSize($event)" />
+        <input type="range" min="1" max="20" value="5" (input)="changeBrushSize($event)" tabindex="0"
+            aria-label="Brush size" />
         <!-- Controles básicos -->
-        <button (click)="useEraser()">✏️ Borrar</button>
-        <button (click)="undo()">↩️ Deshacer</button>
-        <button (click)="redo()">↪️ Rehacer</button>
+        <div class="container-controls">
+            <button (click)="useEraser()" tabindex="0" aria-label="Use eraser">✏️ Borrar</button>
+            <button (click)="undo()" tabindex="0" aria-label="Undo">↩️ Deshacer</button>
+            <button (click)="redo()" tabindex="0" aria-label="Redo">↪️ Rehacer</button>
+        </div>
     </div>
 </div>

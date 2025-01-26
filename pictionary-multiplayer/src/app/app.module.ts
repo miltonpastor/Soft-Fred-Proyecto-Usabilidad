@@ -15,6 +15,7 @@ import { DrawingAreaComponent } from './components/drawing-area/drawing-area.com
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { SelectWordPageComponent } from './pages/select-word-page/select-word-page.component';
 import { GamePageComponent } from './pages/game-page/game-page.component';
+import { HeaderComponent } from './components/header/header.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { GamePageComponent } from './pages/game-page/game-page.component';
     DrawingAreaComponent,
     HomePageComponent,
     SelectWordPageComponent,
-    GamePageComponent
+    GamePageComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
