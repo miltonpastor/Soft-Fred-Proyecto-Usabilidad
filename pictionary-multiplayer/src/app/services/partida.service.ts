@@ -181,6 +181,9 @@ export class PartidaService {
     });
   }
 
-
+  // En el servicio, escucha los cambios de jugadores (unión a la partida)
+  seleccionarPalabra(codigoPartida: string, palabra: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/seleccionar_palabra`, { codigo_partida: codigoPartida, palabra });
+  }
 
 }

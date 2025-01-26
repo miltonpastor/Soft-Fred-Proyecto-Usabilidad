@@ -49,6 +49,15 @@ export class PartidaComponent implements OnInit, OnDestroy {
       this.nombreJugador = params['nombre_jugador'] || '';
     });
 
+    //--------------------------dasdsad----------------
+    this.partidaService.escucharInicioPartida().subscribe({
+      next: (data: any) => {
+        if (this.nombreJugador === data.jugador) {
+          this.palabra = data.palabra;
+          console.log('Es tu turno, palabra a dibujar:', this.palabra);
+        }
+      }
+    });
 
     //Obtener todos los mensajes de chat (para jugadores que se unan despues)
     this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({

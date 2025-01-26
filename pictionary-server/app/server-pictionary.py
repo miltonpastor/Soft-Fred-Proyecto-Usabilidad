@@ -103,6 +103,74 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
     print(partida['jugadores'])
     
 # Evento para iniciar una ronda
+#@socketio.on('iniciar_ronda')
+#def iniciar_ronda(codigo_partida):
+#    if codigo_partida not in partidas:
+#        emit('error', {'mensaje': 'Código de partida inválido'})
+#        return
+
+#    partida = partidas[codigo_partida]
+#    if partida['estado'] != 'jugando':
+#        emit('error', {'mensaje': 'La partida no está en estado de juego'})
+#        return
+
+#    # Elegir tres palabras aleatorias
+#    opciones_palabras = random.sample(obtener_palabras(), 3)
+
+    # Guardar las opciones en la partida para referencia posterior
+ #   partida['opciones_palabras'] = opciones_palabras
+ #   partida['dibujo'] = ""  # Limpiar dibujo
+  #  partida['adivinanza'] = ""
+
+    # Enviar las opciones al jugador que debe dibujar
+  #  emit('elegir_palabra', {'opciones': opciones_palabras}, room=partida['turno'])
+
+# Evento para elegir una palabra
+#@socketio.on('elegir_palabra')
+#def elegir_palabra(data):
+#    codigo_partida = data['codigo_partida']
+#    palabra_seleccionada = data['palabra']
+
+#    if codigo_partida not in partidas:
+#        emit('error', {'mensaje': 'Código de partida inválido'})
+#        return
+
+#    partida = partidas[codigo_partida]
+
+    # Verificar si la palabra seleccionada está entre las opciones
+#    if palabra_seleccionada not in [opcion['palabra'] for opcion in partida['opciones_palabras']]:
+#        emit('error', {'mensaje': 'Palabra inválida'})
+#        return
+
+    # Establecer la palabra seleccionada como la palabra de la ronda
+#    palabra_data = next(opcion for opcion in partida['opciones_palabras'] if opcion['palabra'] == palabra_seleccionada)
+#    partida['palabra'] = palabra_data['palabra']
+#    partida['descripcion'] = palabra_data['descripcion']
+#    partida['imagen'] = palabra_data['imagen']
+
+    # Notificar a todos los jugadores que la ronda ha comenzado
+#    emit('ronda_iniciada', {
+#        'descripcion': palabra_data['descripcion'],
+#        'imagen': palabra_data['imagen']
+#    }, room=codigo_partida)
+
+
+#------------------------------------------------alv--------------------------------------------
+# Ruta para obtener palabras y permitir selección
+@app.route('/seleccionar_palabra', methods=['POST'])
+def seleccionar_palabra():
+    datos = request.json
+    codigo_partida = datos['codigo_partida']
+    palabra_seleccionada = datos['palabra']
+
+    if codigo_partida not in partidas:
+        return jsonify({'error': 'Código de partida inválido'}), 400
+
+    partida = partidas[codigo_partida]
+    partida['palabra'] = palabra_seleccionada  # Guardar la palabra seleccionada
+
+    return jsonify({'mensaje': 'Palabra seleccionada correctamente'}), 200
+
 @socketio.on('iniciar_ronda')
 def iniciar_ronda(codigo_partida):
     if codigo_partida not in partidas:
@@ -114,45 +182,9 @@ def iniciar_ronda(codigo_partida):
         emit('error', {'mensaje': 'La partida no está en estado de juego'})
         return
 
-    # Elegir tres palabras aleatorias
-    opciones_palabras = random.sample(obtener_palabras(), 3)
-
-    # Guardar las opciones en la partida para referencia posterior
-    partida['opciones_palabras'] = opciones_palabras
-    partida['dibujo'] = ""  # Limpiar dibujo
-    partida['adivinanza'] = ""
-
-    # Enviar las opciones al jugador que debe dibujar
-    emit('elegir_palabra', {'opciones': opciones_palabras}, room=partida['turno'])
-
-# Evento para elegir una palabra
-@socketio.on('elegir_palabra')
-def elegir_palabra(data):
-    codigo_partida = data['codigo_partida']
-    palabra_seleccionada = data['palabra']
-
-    if codigo_partida not in partidas:
-        emit('error', {'mensaje': 'Código de partida inválido'})
-        return
-
-    partida = partidas[codigo_partida]
-
-    # Verificar si la palabra seleccionada está entre las opciones
-    if palabra_seleccionada not in [opcion['palabra'] for opcion in partida['opciones_palabras']]:
-        emit('error', {'mensaje': 'Palabra inválida'})
-        return
-
-    # Establecer la palabra seleccionada como la palabra de la ronda
-    palabra_data = next(opcion for opcion in partida['opciones_palabras'] if opcion['palabra'] == palabra_seleccionada)
-    partida['palabra'] = palabra_data['palabra']
-    partida['descripcion'] = palabra_data['descripcion']
-    partida['imagen'] = palabra_data['imagen']
-
-    # Notificar a todos los jugadores que la ronda ha comenzado
-    emit('ronda_iniciada', {
-        'descripcion': palabra_data['descripcion'],
-        'imagen': palabra_data['imagen']
-    }, room=codigo_partida)
+    turno = partida['turno']
+    palabra = partida['palabra']
+    emit('tu_turno', {'palabra': palabra}, room=turno)  # Solo al jugador en turno
 
 # Evento para manejar los dibujos en tiempo real
 @socketio.on('actualizar_dibujo')
