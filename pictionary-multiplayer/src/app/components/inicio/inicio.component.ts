@@ -62,6 +62,7 @@ export class InicioComponent {
   continueGame() {
     if (this.codigoPartida) {
       // Redirigir a la página de la partida con el código
+
       this.router.navigate(['/palabra'], {
         queryParams: { codigo_partida: this.codigoPartida, nombre_jugador: this.username },
       });
@@ -97,6 +98,7 @@ export class InicioComponent {
     const randomIndex = Math.floor(Math.random() * this.avatars.length);
     this.selectedAvatar = this.avatars[randomIndex];
   }
+
 
 
 }

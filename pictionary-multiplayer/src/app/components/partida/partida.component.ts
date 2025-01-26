@@ -53,13 +53,13 @@ export class PartidaComponent implements OnInit, OnDestroy {
     //Obtener todos los mensajes de chat (para jugadores que se unan despues)
     this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({
       next: (data: Mensaje[]) => {
-        if(data.length === 0){
+        if (data.length === 0) {
           this.enviarMensajeChat('ha creado la partida')
-        }else{
+        } else {
           this.mensajes = data
           this.enviarMensajeChat('ha ingresado a la partida')
         }
-        console.log("Enviando el historial",this.mensajes)
+        console.log("Enviando el historial", this.mensajes)
       }
     });
 
@@ -102,7 +102,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
       this.partidaService.escucharChat().subscribe({
         next: (data: Mensaje) => {
           this.mensajes.push(data)
-          console.log('estos son los datos',this.mensajes)
+          console.log('estos son los datos', this.mensajes)
 
         },
         error: (err) => console.log(err)
@@ -195,5 +195,4 @@ export class PartidaComponent implements OnInit, OnDestroy {
       console.log('Música de fondo desactivada.');
     }
   }
-
 }
