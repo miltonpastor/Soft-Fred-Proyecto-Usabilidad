@@ -51,7 +51,7 @@
   width: 100%;
   height: 100vh;
   /* Ocupa toda la altura de la pantalla */
-  background-image: url('../../../assets/background.jpg');
+  background-image: url('../../../assets/backgroundPartida.jpg');
   background-size: cover;
   /* Asegura que la imagen cubra todo el área */
   background-position: center;
