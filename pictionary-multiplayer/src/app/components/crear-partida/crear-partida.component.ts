@@ -16,7 +16,7 @@ export class CrearPartidaComponent {
   constructor(
     private partidaService: PartidaService,
     private modalService: ModalService
-  ) {}
+  ) { }
 
   createGame() {
     if (this.tiempoPorRonda < 10 || this.tiempoPorRonda > 120) {
@@ -24,22 +24,7 @@ export class CrearPartidaComponent {
       return;
     }
 
-    this.partidaService.crearPartida(this.nombreJugador, this.tiempoPorRonda).subscribe({
-      next: (response) => {
-        const codigoPartida = response?.partida?.codigo_partida;
-        if (codigoPartida) {
-          this.modalService.setCodigoPartida(codigoPartida);
-          this.partidaCreada.emit(this.tiempoPorRonda);
-          this.partidaService.unirseASala(codigoPartida, this.nombreJugador);
-        } else {
-          console.error('Código de partida no disponible en la respuesta:', response);
-        }
-      },
-      error: (err) => {
-        console.error('Error al crear la partida:', err);
-        alert('Hubo un error al crear la partida. Intenta de nuevo.');
-      },
-    });
+
   }
   close() {
   }

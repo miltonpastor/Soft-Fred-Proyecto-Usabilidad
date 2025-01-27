@@ -20,10 +20,9 @@ export class PartidaService {
   }
 
   // Método para crear una partida
-  crearPartida(nombreAnfitrion: string, tiempoPorRonda: number): Observable<any> {
+  crearPartida(nombreAnfitrion: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/crear_partida`, {
-      nombre_anfitrion: nombreAnfitrion,
-      tiempo_por_ronda: tiempoPorRonda
+      nombre_anfitrion: nombreAnfitrion
     });
   }
 
@@ -95,15 +94,9 @@ export class PartidaService {
     });
   }
 
-
-  elegirPalabra(codigoPartida: string, palabra: string): void {
-    this.socket.emit('elegir_palabra', codigoPartida, palabra);
-  }
-
-
   // Iniciar la ronda
-  iniciarRonda(codigoPartida: string) {
-    this.socket.emit('iniciar_ronda', codigoPartida);
+  iniciarRonda(codigoPartida: string, tiempoPorRonda: number, rondas: number): void {
+    this.socket.emit('iniciar_ronda', { codigo_partida: codigoPartida, tiempo_por_ronda: tiempoPorRonda, rondas: rondas });
   }
 
   // Escuchar si la partida ha comenzado
@@ -181,6 +174,9 @@ export class PartidaService {
     });
   }
 
-
+  // En el servicio, escucha los cambios de jugadores (unión a la partida)
+  seleccionarPalabra(codigoPartida: string, palabra: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/seleccionar_palabra`, { codigo_partida: codigoPartida, palabra });
+  }
 
 }

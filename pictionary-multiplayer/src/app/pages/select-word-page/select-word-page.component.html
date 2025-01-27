@@ -1,12 +1,15 @@
-<div class="container">
-  <h1>Elige una Palabra</h1>
-  <div id="opciones-container">
-    <!-- Las palabras se generarán dinámicamente aquí -->
-    <div *ngFor="let opcion of opciones" class="opcion">
-      <img [src]="opcion.imagen" [alt]="opcion.palabra">
-      <h2>{{ opcion.palabra }}</h2>
-      <p>{{ opcion.descripcion }}</p>
-      <button (click)="seleccionarPalabra(opcion.palabra)">Elegir</button>
+<div class="overlay" role="dialog" aria-labelledby="selectWordTitle" aria-modal="true">
+  <div class="container">
+    <h1 id="selectWordTitle">Elige una Palabra</h1>
+    <div id="opciones-container">
+      <!-- Las palabras se generarán dinámicamente aquí -->
+      <div *ngFor="let opcion of opciones" class="opcion" tabindex="0">
+        <img [src]="opcion.imagen" [alt]="opcion.palabra" class="opcion-imagen" tabindex="0">
+        <h2 class="opcion-titulo" tabindex="0">{{ opcion.palabra }}</h2>
+        <p class="opcion-descripcion" tabindex="0">{{ opcion.descripcion }}</p>
+        <button (click)="seleccionarPalabra(opcion.palabra)" class="btn btn-primary" tabindex="0">Elegir</button>
+      </div>
     </div>
+    <button class="btn btn-secondary cerrar" (click)="cerrarModal()" tabindex="0">Cerrar</button>
   </div>
 </div>

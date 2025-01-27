@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PartidaService } from '../../services/partida.service'; // Asegúrate de ajustar la ruta según tu estructura de carpetas
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-select-word-page',
@@ -9,10 +10,24 @@ import { PartidaService } from '../../services/partida.service'; // Asegúrate d
 })
 export class SelectWordPageComponent implements OnInit {
   opciones: any[] = [];
+  codigoPartida: string | null = null; // Código de la partida obtenido de la URL
+  nombreJugador: string | null = null; // Nombre del jugador obtenido de la URL
+  @Output() cerrar = new EventEmitter<void>();
 
-  constructor(private partidaService: PartidaService) { }
+
+  constructor(private partidaService: PartidaService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.codigoPartida = params['codigo_partida'] || null;
+      this.nombreJugador = params['nombre_jugador'] || null;
+
+      console.log('Código de partida:', this.codigoPartida);
+      console.log('Nombre del jugador:', this.nombreJugador);
+    });
+
     this.partidaService.getOpcionesPalabras().subscribe({
       next: (response) => {
         this.opciones = response.opciones;
@@ -25,9 +40,24 @@ export class SelectWordPageComponent implements OnInit {
     });
   }
 
+  //-------------------asdsad-------------------  
   seleccionarPalabra(palabra: string): void {
-    console.log(`Palabra seleccionada: ${palabra}`);
-    // Aquí enviarías la selección al servidor, por ejemplo, con WebSocket o Fetch API
-    alert(`Has seleccionado: ${palabra}`);
+    if (!this.codigoPartida) {
+      return;
+    }
+    this.partidaService.seleccionarPalabra(this.codigoPartida, palabra).subscribe({
+      next: () => {
+        console.log('Palabra seleccionada:', palabra);
+        this.cerrarModal();
+      },
+      error: (error) => {
+        console.error('Error al seleccionar la palabra:', error);
+      }
+    });
   }
+
+  cerrarModal() {
+    this.cerrar.emit();
+  }
+
 }

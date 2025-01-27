@@ -11,9 +11,16 @@ export class ModalService {
   private modalVisibleSource = new BehaviorSubject<boolean>(false);
   modalVisible$ = this.modalVisibleSource.asObservable();
 
+  private anfitrionSource = new BehaviorSubject<string | null>(null);
+  anfitrion$ = this.anfitrionSource.asObservable();
+
   setCodigoPartida(codigo: string) {
     this.codigoPartidaSource.next(codigo);
     this.showModal();
+  }
+
+  setAnfitrion(anfitrion: string) {
+    this.anfitrionSource.next(anfitrion);
   }
 
   showModal() {

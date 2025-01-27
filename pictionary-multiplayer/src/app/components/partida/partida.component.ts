@@ -4,6 +4,7 @@ import { PartidaService } from '../../services/partida.service';
 import { Subscription } from 'rxjs';
 import { Partida } from '../../models/partida.model';
 import { Mensaje } from '../../models/mensaje.model';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-partida',
@@ -15,7 +16,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
   codigoPartida: string = '';
   nombreJugador: string = '';
   nombreAnfitrion: string = '';
-  palabraAdivinar: string = 'Palabra';
+  palabraAdivinar: string = '';
 
   intento: string = '';
   tiempoPorRonda: number = 30;  // Ejemplo de valor
@@ -31,24 +32,31 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
   // Variables de la interfaz de la partida
   mensajeTurno: string = '';
-  palabra: string = '';
 
-
-  pantallaEspera: boolean = true;
+  pantallaEspera: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private partidaService: PartidaService,
+    private modalService: ModalService,
     private router: Router
   ) { }
+
 
   ngOnInit(): void {
     // Obtener los parámetros de la URL
     this.route.queryParams.subscribe(params => {
       this.codigoPartida = params['codigo_partida'] || '';
-      this.nombreJugador = params['nombre_jugador'] || '';
+      this.nombreJugador = params['user'] || '';
+    });
+    // load anfitrion = dibujante
+    this.modalService.anfitrion$.subscribe(anfitrion => {
+      this.nombreAnfitrion = anfitrion || '';
     });
 
+
+    //--------------------------dasdsad----------------
+    this.escucharInicioPartida();
 
     //Obtener todos los mensajes de chat (para jugadores que se unan despues)
     this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({
@@ -59,13 +67,13 @@ export class PartidaComponent implements OnInit, OnDestroy {
           this.mensajes = data
           this.enviarMensajeChat('ha ingresado a la partida')
         }
-        console.log("Enviando el historial", this.mensajes)
       }
     });
 
     // Escuchar los jugadores y el chat en tiempo real
     this.iniciarEscucharPartida();
     this.iniciarEscucharChat();
+    this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === '';
   }
 
   ngOnDestroy(): void {
@@ -83,13 +91,26 @@ export class PartidaComponent implements OnInit, OnDestroy {
           if (this.jugadores.length >= 2) {
             this.iniciarPartida()
           }
-          console.log('Jugadores actualizados:', this.jugadores);
         },
         (error) => {
-          console.error('Error al recibir la lista de jugadores:', error);
         }
       )
     );
+  }
+
+
+
+  escucharInicioPartida(): void {
+
+    this.partidaService.escucharInicioPartida().subscribe({
+      next: (data: any) => {
+        this.palabraAdivinar = data.palabra;
+        this.nombreAnfitrion = data.dibujante;
+        this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === ''
+        console.log('Es tu turno:', data);
+      }
+    });
+
   }
 
 
@@ -101,9 +122,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
     this.partidaSubscription.add(
       this.partidaService.escucharChat().subscribe({
         next: (data: Mensaje) => {
-          this.mensajes.push(data)
-          console.log('estos son los datos', this.mensajes)
-
+          this.mensajes.push(data);
         },
         error: (err) => console.log(err)
       })
@@ -112,13 +131,9 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
   // Enviar un mensaje de chat
   enviarMensajeChat(mensaje: string = ''): void {
-    console.log('Aquí emitiendo valores al enviar mensaje');
-
     // Usar el parámetro `mensaje` si está definido
     const mensajeAEnviar = mensaje.trim() || this.mensajeChat.trim();
-
     this.partidaService.enviarMensajeChat(this.codigoPartida, this.nombreJugador, mensajeAEnviar);
-
     // Limpiar el campo
     if (!mensaje.trim()) {
       this.mensajeChat = '';
@@ -148,7 +163,6 @@ export class PartidaComponent implements OnInit, OnDestroy {
           console.log('Partida iniciada:', respuesta);
         },
         error: (err) => {
-          console.error('Error al iniciar la partida:', err);
           this.errores.push('No se pudo iniciar la partida. Intenta nuevamente.');
         }
       });
@@ -185,14 +199,11 @@ export class PartidaComponent implements OnInit, OnDestroy {
       audioElement.loop = true;
       audioElement.play().then(() => {
         this.isMusicPlaying = true;
-        console.log('Música de fondo activada.');
       }).catch(error => {
-        console.error('Error al reproducir el audio:', error);
       });
     } else {
       audioElement.pause();
       this.isMusicPlaying = false;
-      console.log('Música de fondo desactivada.');
     }
   }
 }

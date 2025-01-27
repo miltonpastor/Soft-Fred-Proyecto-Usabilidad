@@ -1,19 +1,15 @@
-<div class="unirse-partida">
-  <h2>Unirse a una Partida</h2>
+<div class="unirse-partida" role="dialog" aria-labelledby="unirsePartidaTitle" aria-modal="true">
+  <h2 id="unirsePartidaTitle">Unirse a una Partida</h2>
 
-  <input
-    [(ngModel)]="codigoPartida"
-    name="codigoPartida"
-    class="input"
-    placeholder="Código de la partida"
-    required
-  />
+  <label for="codigoPartida" class="sr-only">Código de la partida</label>
+  <input [(ngModel)]="codigoPartida" id="codigoPartida" name="codigoPartida" class="input"
+    placeholder="Código de la partida" required aria-required="true" />
 
-  <button (click)="joinGame()" class="btn primary" [disabled]="!codigoPartida.trim()">
+  <button (click)="joinGame()" class="btn primary" [disabled]="!codigoPartida.trim()" aria-label="Unirse a la partida">
     Unirse a la partida
   </button>
 
-  <button (click)="close()" class="btn secondary">
+  <button (click)="close()" class="btn secondary" aria-label="Cerrar">
     Cerrar
   </button>
 </div>

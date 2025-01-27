@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from '../../services/modal.service';
+import { PartidaService } from '../../services/partida.service';
 
 @Component({
   selector: 'app-inicio',
@@ -10,81 +11,59 @@ import { ModalService } from '../../services/modal.service';
 })
 export class InicioComponent {
   username: string = '';
-  showCreate: boolean = false;
   showJoin: boolean = false;
-
   avatars: string[] = ['👤', '👩', '👨', '🧑', '👧', '👦', '🧓', '👴', '👵', '🧔', '👳', '👲', '🧕', '👮', '👷', '💂', '🕵️', '👩‍⚕️', '👨‍⚕️', '👩‍🌾', '👨‍🌾', '👩‍🍳', '👨‍🍳', '👩‍🎓', '👨‍🎓', '👩‍🎤', '👨‍🎤', '👩‍🏫', '👨‍🏫', '👩‍🏭', '👨‍🏭', '👩‍💻', '👨‍💻', '👩‍💼', '👨‍💼', '👩‍🔧', '👨‍🔧', '👩‍🔬', '👨‍🔬', '👩‍🎨', '👨‍🎨', '👩‍🚒', '👨‍🚒', '👩‍✈️', '👨‍✈️', '👩‍🚀', '👨‍🚀', '👩‍⚖️', '👨‍⚖️'];
   selectedAvatar: string = this.avatars[0];
   codigoPartida: string | null = null;
-  modalVisible: boolean = false;
-  modalMessage: string | null = null; // Para almacenar el mensaje de éxito
 
-  constructor(private router: Router, private modalService: ModalService) {
+  constructor(private router: Router, private modalService: ModalService, private partidaService: PartidaService) {
+    this.subscribeToCodigoPartida();
+  }
+
+  // Método para suscribirse a los cambios en el código de la partida
+  private subscribeToCodigoPartida() {
     this.modalService.codigoPartida$.subscribe((codigo) => {
       this.codigoPartida = codigo;
     });
+  }
 
-    this.modalService.modalVisible$.subscribe((visible) => {
-      this.modalVisible = visible;
+  // Método para navegar a la página de la partida
+  OnNavigateToPartida() {
+    if (this.codigoPartida) {
+      this.router.navigate(['/partida'], {
+        queryParams: { codigo_partida: this.codigoPartida, user: this.username },
+      });
+    }
+  }
+
+
+  continueGame() {
+    this.partidaService.crearPartida(this.username).subscribe({
+      next: (response) => {
+        const codigoPartida = response?.partida?.codigo_partida;
+        if (codigoPartida) {
+          this.modalService.setAnfitrion(this.username);
+          this.modalService.setCodigoPartida(codigoPartida);
+          this.partidaService.unirseASala(codigoPartida, this.username);
+          this.OnNavigateToPartida();
+        }
+      },
+      error: (err) => {
+        alert('Hubo un error al crear la partida. Intenta de nuevo.');
+      },
     });
   }
 
-  showCreateComponent() {
-    this.showCreate = true;
-    this.showJoin = false;
-  }
-
   showJoinComponent() {
-    this.showCreate = false;
     this.showJoin = true;
   }
 
-  closeModal() {
-    this.modalService.hideModal();
-  }
-
-  // Copiar el código al portapapeles
-  copyToClipboard() {
-    if (this.codigoPartida) {
-      const el = document.createElement('textarea');
-      el.value = this.codigoPartida;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-
-      // Mostrar mensaje de éxito en el modal
-      this.modalMessage = '¡Código copiado al portapapeles!';
+  onPartidaUnida(codigo: string | null) {
+    this.codigoPartida = codigo;
+    if (codigo) {
+      this.OnNavigateToPartida();
     }
   }
-
-  // Continuar al siguiente paso (por ejemplo, ir a la página de la partida)
-  continueGame() {
-    if (this.codigoPartida) {
-      // Redirigir a la página de la partida con el código
-
-      this.router.navigate(['/palabra'], {
-        queryParams: { codigo_partida: this.codigoPartida, nombre_jugador: this.username },
-      });
-    }
-  }
-
-  // Este método maneja la creación de la partida y la navegación a la página de la partida.
-  onPartidaCreada(tiempoPorRonda: number | null) {
-    this.showCreate = false; // Cerrar el componente de crear partida
-  }
-
-  // Este método maneja unirse a una partida y la navegación a la página de la partida.
-  onPartidaUnida(codigoPartida: string | null) {
-    if (codigoPartida) {
-      // Redirigir a la página de la partida con el código
-      this.router.navigate(['/partida'], {
-        queryParams: { codigo_partida: codigoPartida, nombre_jugador: this.username },
-      });
-    }
-    this.showJoin = false; // Cerrar el componente de unirse a partida
-  }
-
   changeAvatar(direction: string) {
     const currentIndex = this.avatars.indexOf(this.selectedAvatar);
     if (direction === 'prev') {
@@ -99,6 +78,7 @@ export class InicioComponent {
     this.selectedAvatar = this.avatars[randomIndex];
   }
 
-
-
+  handleCloseJoin() {
+    this.showJoin = false;
+  }
 }
