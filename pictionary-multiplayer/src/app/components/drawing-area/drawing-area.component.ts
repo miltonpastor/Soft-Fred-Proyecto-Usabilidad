@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Input } from '@angular/core';
 import { PartidaService } from '../../services/partida.service';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-drawing-area',
@@ -21,10 +22,15 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   private redoStack: ImageData[] = [];
   private drawingSubscription!: Subscription;
   private sendDrawingTimeout: any;
+  private nombreJugador: string = '';
 
-  constructor(private partidaService: PartidaService) { }
+  constructor(private partidaService: PartidaService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.nombreJugador = params['user'] || '';
+    });
+
     this.context = this.canvas.nativeElement.getContext('2d', { willReadFrequently: true })!;
     this.drawingSubscription = this.partidaService.escucharDibujo().subscribe((data: any) => {
       this.loadDrawing(data.dibujo);
@@ -120,7 +126,9 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
 
   private sendDrawing(): void {
     const drawing = this.canvas.nativeElement.toDataURL();
-    this.partidaService.actualizarDibujo(this.codigoPartida, drawing);
+    console.log('Enviando dibujo:', this.nombreJugador);
+
+    this.partidaService.actualizarDibujo(this.codigoPartida, drawing, this.nombreJugador);
   }
 
   private loadDrawing(drawing: string): void {

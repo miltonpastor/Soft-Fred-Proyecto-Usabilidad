@@ -153,12 +153,13 @@ def iniciar_ronda(data):
 def actualizar_dibujo(data):
     codigo_partida = data["codigo_partida"]
     dibujo = data["dibujo"]
-
+    jugador = data["nombre_jugador"]
 
     if codigo_partida not in partidas:
         return
+
     partida = partidas[codigo_partida]
-    if partida['estado'] != 'jugando' :
+    if partida['nombre_anfitrion'] != jugador:
         return
     
     partida['dibujo'] = dibujo

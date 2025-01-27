@@ -42,8 +42,8 @@ export class PartidaService {
   }
 
   // Emitir un dibujo en tiempo real
-  actualizarDibujo(codigo_partida: string, dibujo: string): void {
-    this.socket.emit('actualizar_dibujo', { codigo_partida, dibujo });
+  actualizarDibujo(codigo_partida: string, dibujo: string, nombre_jugador: string): void {
+    this.socket.emit('actualizar_dibujo', { codigo_partida, dibujo, nombre_jugador });
   }
 
   // Escuchar actualizaciones de dibujo
