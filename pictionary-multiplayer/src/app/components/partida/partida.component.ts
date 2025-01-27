@@ -104,7 +104,9 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
     this.partidaService.escucharInicioPartida().subscribe({
       next: (data: any) => {
-        this.palabraAdivinar = data.palabra;
+        if (this.nombreJugador === this.nombreAnfitrion) {
+          this.palabraAdivinar = data.palabra;
+        }
         this.nombreAnfitrion = data.dibujante;
         this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === ''
         console.log('Es tu turno:', data);

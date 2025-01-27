@@ -2,7 +2,7 @@
 .center-panel,
 .panel-right {
   background-color: white;
-  height: 500px;
+  height: 580px;
   border-radius: 4px;
 }
 
@@ -22,8 +22,30 @@
   font-size: 0.9rem;
 }
  */
+
+.panel-left .player-card {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  align-items: center;
+}
+
+.panel-left .player-card .player-name {
+  font-weight: bold;
+}
+
+.panel-left .player-card .player-score {
+  color: #6c757d;
+}
+
+
+
 .panel-right .chat-box {
-  height: 430px;
+  height: 530px;
   overflow-y: auto;
 }
 
@@ -47,7 +69,7 @@
 
 
 
-.boton-sin-estilos{
+.boton-sin-estilos {
   background-color: white;
   border: none;
 }

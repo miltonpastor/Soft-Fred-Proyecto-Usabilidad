@@ -1,12 +1,22 @@
 .waiting-contenedor {
   height: 100%;
   padding: 20px;
-  background-color: #35394a; /* Nota: agregué el símbolo # para el color hexadecimal */
+  background-color: #35394a;
+  /* Nota: agregué el símbolo # para el color hexadecimal */
   border-radius: 4px;
 
   /* Agregar posición y z-index */
-  position: relative; /* Esto es necesario para que z-index funcione */
-  z-index: 10; /* Puedes usar el valor que necesites */
+  position: relative;
+  /* Esto es necesario para que z-index funcione */
+  z-index: 10;
+  /* Puedes usar el valor que necesites */
+}
+
+.waiting-contenedor form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
 }
 
 .campo {

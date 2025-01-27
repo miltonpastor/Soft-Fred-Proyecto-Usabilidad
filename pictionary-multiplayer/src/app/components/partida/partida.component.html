@@ -1,4 +1,4 @@
-<div class="container pb-5">
+<div class="container h-100 pb-5">
   <!-- Top Bar -->
   <div class="row bg-white py-1 px-1 d-flex align-items-center">
     <div class="timer col-4 d-flex align-items-center justify-content-start">
@@ -9,7 +9,7 @@
       </span>
     </div>
     <div class="settings-icon col-4 d-flex justify-content-end">
-      <button class="boton-sin-estilos" (click)="openModal()">
+      <button class="boton-sin-estilos border-0" (click)="openModal()">
         <i class="bi bi-gear" style="font-size: 1.8rem"></i>
       </button>
     </div>
@@ -35,7 +35,7 @@
         <app-espera></app-espera>
         }@else{
         <!-- Drawing Area -->
-        <app-drawing-area [codigoPartida]="codigoPartida"></app-drawing-area>
+        <app-drawing-area [codigoPartida]="codigoPartida" [usuarioQuePuedeDibujar]="nombreAnfitrion"></app-drawing-area>
         }
       </div>
     </div>
@@ -43,7 +43,7 @@
     <!-- Right Panel: Chat -->
     <div class=" col-2 p-0">
       <div class="panel-right">
-        <div class="container-fluid p-0">
+        <div class="container-right container-fluid p-0">
           <div class="chat-box">
             @for (mensaje of mensajes; track $index) {
             <div class="p-2" [ngClass]="{
