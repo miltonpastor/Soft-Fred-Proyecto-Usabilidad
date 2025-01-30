@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { Partida } from '../models/partida.model';
 import { Mensaje } from '../models/mensaje.model';
+import { Jugador } from '../models/jugador.model';
 
 @Injectable({
   providedIn: 'root'
@@ -76,8 +77,8 @@ export class PartidaService {
     return this.http.get<Partida>(`${this.apiUrl}/estado_partida/${codigoPartida}`);
   }
 
-  unirseASala(codigoPartida: string, nombreJugador: string): void {
-    this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador);
+  unirseASala(codigoPartida: string, nombreJugador: string, avatarJugador: string): void {
+    this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador, avatarJugador);
   }
 
   // Salir de la sala
@@ -149,15 +150,11 @@ export class PartidaService {
 
 
   // En el servicio, escucha los cambios de jugadores (unión a la partida)
-  escucharUnirsePartida(): Observable<string[]> {
-    return new Observable<string[]>(observer => {
-      this.socket.on('actualizar_jugadores', (response: { lista: string[] }) => {
+  escucharUnirsePartida(): Observable<Jugador[]> {
+    return new Observable<Jugador[]>(observer => {
+      this.socket.on('actualizar_jugadores', (response: { lista: Jugador[] }) => {
         try {
-          console.log(typeof(response.lista), response.lista)
-
-          //const jugadores = response.lista.split(',').map(jugador => jugador.trim());
-
-          //console.log(jugadores)
+          console.log(response.lista)
           observer.next(response.lista);
 
         } catch (error) {
