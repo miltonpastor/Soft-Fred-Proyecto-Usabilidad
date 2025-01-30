@@ -32,8 +32,10 @@
 
 
 .panel-right .chat-box {
-  height: 530px;
+  height: 545px;
   overflow-y: auto;
+  overflow-x: hidden;
+  word-wrap: break-word;
 }
 
 .mensaje-ingreso {
