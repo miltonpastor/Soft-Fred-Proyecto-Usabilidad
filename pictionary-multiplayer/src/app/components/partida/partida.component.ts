@@ -87,6 +87,8 @@ export class PartidaComponent implements OnInit, OnDestroy {
       this.partidaService.escucharUnirsePartida().subscribe(
         (jugadores: string[]) => {
           // Actualiza la lista de jugadores
+
+          console.log(jugadores)
           this.jugadores = jugadores;
           if (this.jugadores.length >= 2) {
             this.iniciarPartida()

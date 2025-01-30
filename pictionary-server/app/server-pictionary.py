@@ -33,7 +33,7 @@ def crear_partida():
     # Guardar la partida en memoria
     partidas[codigo_partida] = {
         'nombre_anfitrion': nombre_anfitrion,
-        'jugadores': [nombre_anfitrion],
+        'jugadores': [],
         'tiempo_por_ronda': 0,
         'ronda_actual': 0,
         "rondas": 0,
@@ -99,7 +99,7 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'lista': f'{partida["jugadores"]}'}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': partida['jugadores']}, room=codigo_partida)
     print(partida['jugadores'])
 
 
