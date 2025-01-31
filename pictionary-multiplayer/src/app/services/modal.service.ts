@@ -11,16 +11,16 @@ export class ModalService {
   private modalVisibleSource = new BehaviorSubject<boolean>(false);
   modalVisible$ = this.modalVisibleSource.asObservable();
 
-  private anfitrionSource = new BehaviorSubject<string | null>(null);
-  anfitrion$ = this.anfitrionSource.asObservable();
+  private jugadorTurnoSource = new BehaviorSubject<string | null>(null);
+  jugadorTurno$ = this.jugadorTurnoSource.asObservable();
 
   setCodigoPartida(codigo: string) {
     this.codigoPartidaSource.next(codigo);
     this.showModal();
   }
 
-  setAnfitrion(anfitrion: string) {
-    this.anfitrionSource.next(anfitrion);
+  setJugadorTurno(nombre: string) {
+    this.jugadorTurnoSource.next(nombre);
   }
 
   showModal() {

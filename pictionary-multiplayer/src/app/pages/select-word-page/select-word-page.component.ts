@@ -12,8 +12,7 @@ export class SelectWordPageComponent implements OnInit {
   opciones: any[] = [];
   codigoPartida: string | null = null; // Código de la partida obtenido de la URL
   nombreJugador: string | null = null; // Nombre del jugador obtenido de la URL
-  @Output() cerrar = new EventEmitter<void>();
-
+  // @Output() cambiarEstado = new EventEmitter<string>();
 
   constructor(private partidaService: PartidaService,
     private route: ActivatedRoute
@@ -23,16 +22,11 @@ export class SelectWordPageComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.codigoPartida = params['codigo_partida'] || null;
       this.nombreJugador = params['nombre_jugador'] || null;
-
-      console.log('Código de partida:', this.codigoPartida);
-      console.log('Nombre del jugador:', this.nombreJugador);
     });
 
     this.partidaService.getOpcionesPalabras().subscribe({
       next: (response) => {
         this.opciones = response.opciones;
-        console.log(this.opciones);
-
       },
       error: (error) => {
         console.error('Error al cargar las opciones de palabras:', error);
@@ -42,22 +36,9 @@ export class SelectWordPageComponent implements OnInit {
 
   //-------------------asdsad-------------------  
   seleccionarPalabra(palabra: string): void {
-    if (!this.codigoPartida) {
-      return;
+    if (this.codigoPartida) {
+      this.partidaService.iniciarRonda(this.codigoPartida, palabra);
+      // this.cambiarEstado.emit('jugando');
     }
-    this.partidaService.seleccionarPalabra(this.codigoPartida, palabra).subscribe({
-      next: () => {
-        console.log('Palabra seleccionada:', palabra);
-        this.cerrarModal();
-      },
-      error: (error) => {
-        console.error('Error al seleccionar la palabra:', error);
-      }
-    });
   }
-
-  cerrarModal() {
-    this.cerrar.emit();
-  }
-
 }

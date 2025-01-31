@@ -15,7 +15,7 @@ import { ModalService } from '../../services/modal.service';
 export class PartidaComponent implements OnInit, OnDestroy {
   codigoPartida: string = '';
   nombreJugador: string = '';
-  nombreAnfitrion: string = '';
+  jugadorTurno: string = '';
   palabraAdivinar: string = '';
 
   intento: string = '';
@@ -44,21 +44,19 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    // Obtener los parámetros de la URL
     this.route.queryParams.subscribe(params => {
-      this.codigoPartida = params['codigo_partida'] || '';
-      this.nombreJugador = params['user'] || '';
+      this.nombreJugador = params['jugador'];
+    });
+
+    this.modalService.codigoPartida$.subscribe(codigo => {
+      this.codigoPartida = codigo || '';
     });
     // load anfitrion = dibujante
-    this.modalService.anfitrion$.subscribe(anfitrion => {
-      this.nombreAnfitrion = anfitrion || '';
+    this.modalService.jugadorTurno$.subscribe(nombre => {
+      this.jugadorTurno = nombre || '';
     });
 
 
-    //--------------------------dasdsad----------------
-    this.escucharInicioPartida();
-
-    //Obtener todos los mensajes de chat (para jugadores que se unan despues)
     this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({
       next: (data: Mensaje[]) => {
         if (data.length === 0) {
@@ -69,52 +67,13 @@ export class PartidaComponent implements OnInit, OnDestroy {
         }
       }
     });
-
-    // Escuchar los jugadores y el chat en tiempo real
-    this.iniciarEscucharPartida();
     this.iniciarEscucharChat();
-    this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === '';
   }
 
   ngOnDestroy(): void {
     // Cancelar suscripciones cuando el componente se destruye
     this.partidaSubscription.unsubscribe();
   }
-
-  // En el componente donde se escucha el evento
-  iniciarEscucharPartida(): void {
-    this.partidaSubscription.add(
-      this.partidaService.escucharUnirsePartida().subscribe(
-        (jugadores: string[]) => {
-          // Actualiza la lista de jugadores
-          this.jugadores = jugadores;
-          if (this.jugadores.length >= 2) {
-            this.iniciarPartida()
-          }
-        },
-        (error) => {
-        }
-      )
-    );
-  }
-
-
-
-  escucharInicioPartida(): void {
-
-    this.partidaService.escucharInicioPartida().subscribe({
-      next: (data: any) => {
-        if (this.nombreJugador === this.nombreAnfitrion) {
-          this.palabraAdivinar = data.palabra;
-        }
-        this.nombreAnfitrion = data.dibujante;
-        this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === ''
-        console.log('Es tu turno:', data);
-      }
-    });
-
-  }
-
 
 
   //----------------------CHAT----------------------------
@@ -154,21 +113,8 @@ export class PartidaComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
-  // Función para iniciar la partida
-  iniciarPartida(): void {
-    // this.nombreJugador === this.nombreAnfitrion &&
-    console.log("ya inicio");
-
-    if (this.estadoPartida === 'esperando') {
-      this.partidaService.iniciarPartida(this.codigoPartida).subscribe({
-        next: (respuesta) => {
-          console.log('Partida iniciada:', respuesta);
-        },
-        error: (err) => {
-          this.errores.push('No se pudo iniciar la partida. Intenta nuevamente.');
-        }
-      });
-    }
+  cambiarEstadoPartida(nuevoEstado: string) {
+    this.estadoPartida = nuevoEstado;
   }
 
 

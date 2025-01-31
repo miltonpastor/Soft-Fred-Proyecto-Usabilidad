@@ -30,12 +30,16 @@
     <!-- Center Panel -->
     <div class="col-8 p-0">
       <div class="center-panel me-1">
-        @if (pantallaEspera) {
+        @if (estadoPartida === 'esperando') {
         <!-- Pantalla de espera -->
-        <app-espera></app-espera>
-        }@else{
+        <app-espera [esEditable]="nombreJugador == jugadorTurno"
+          (cambiarEstado)="cambiarEstadoPartida($event)"></app-espera>
+        }@else if (estadoPartida === 'jugando') {
         <!-- Drawing Area -->
-        <app-drawing-area [codigoPartida]="codigoPartida" [usuarioQuePuedeDibujar]="nombreAnfitrion"></app-drawing-area>
+        <app-drawing-area [codigoPartida]="codigoPartida"
+          [esEditable]="nombreJugador == jugadorTurno"></app-drawing-area>
+        }@else {
+        <div>Ahora necesito que si </div>
         }
       </div>
     </div>
@@ -77,6 +81,10 @@
   </div>
 </div>
 
+<!-- select word page -->
+<div *ngIf="estadoPartida === 'seleccionandoPalabra' &&  nombreJugador == jugadorTurno" class="modal-overlay">
+  <app-select-word-page></app-select-word-page>
+</div>
 
 <!-- Reproductor de música de fondo (oculto) -->
 <div>

@@ -34,6 +34,7 @@ def crear_partida():
     partidas[codigo_partida] = {
         'nombre_anfitrion': nombre_anfitrion,
         'jugadores': [nombre_anfitrion],
+        "max_jugadores": 5,
         'tiempo_por_ronda': 0,
         'ronda_actual': 0,
         "rondas": 0,
@@ -42,7 +43,7 @@ def crear_partida():
         'dibujo': "",
         'adivinanza': "",
         'mensajes': [],
-        'turno': None,  # El jugador que está dibujando
+        'turno': nombre_anfitrion,  # El jugador que está dibujando
         'codigo_partida': codigo_partida
     }
     #print(partidas[codigo_partida])
@@ -59,9 +60,12 @@ def get_opciones_palabras_route():
 # Ruta para iniciar la partida
 @app.route('/iniciar_partida', methods=['POST'])
 def iniciar_partida():
-    datos = request.json
-    codigo_partida = datos['codigo_partida']
-
+    data = request.json
+    codigo_partida = data['codigo_partida']
+    tiempo_por_ronda = data.get('tiempo_por_ronda')
+    rondas = data.get('rondas')
+    jugadores = data.get('numJugadores')
+    
     if codigo_partida not in partidas:
         return jsonify({'error': 'Código de partida inválido'}), 400
 
@@ -70,10 +74,41 @@ def iniciar_partida():
         return jsonify({'error': 'Se necesitan al menos dos jugadores para comenzar'}), 400
 
     partida['estado'] = 'jugando'
-    partida['ronda_actual'] = 1
-    partida['turno'] = partida['jugadores'][0]  # El primer jugador es el que dibuja
+    partida['tiempo_por_ronda'] = tiempo_por_ronda
+    partida['rondas'] = rondas
+    partida['max_jugadores'] = jugadores
+    partida['ronda_actual'] += 1
+    mensaje = f'{partida["turno"]} está seleccionando la palabra'
+    partida['mensajes'].append({'nombre_jugador': 'Sistema', 'mensaje': mensaje})
 
     return jsonify({'mensaje': 'Partida iniciada'}), 200
+
+@socketio.on('iniciar_ronda')
+def iniciar_ronda(data):
+    codigo_partida = data.get('codigo_partida')
+    palabra = data.get('palabra')
+    
+    if codigo_partida not in partidas:
+        emit('error', {'mensaje': 'Código de partida inválido'})
+        return
+    partida = partidas[codigo_partida]
+    
+    if partida['ronda_actual'] >= partida['rondas']:
+        emit('fin_partida', {'mensaje': 'Fin de la partida'})
+        return
+    if partida['estado'] != 'jugando':
+        emit('error', {'mensaje': 'La partida no está en estado de juego'})
+        return
+
+    # Configurar el tiempo por ronda y el número de rondas
+    tiempo_por_ronda = partida['tiempo_por_ronda']
+    # Elegir una palabra para el dibujante
+    partida['palabra'] = palabra
+    partida['dibujo'] = ""  # Limpiar dibujo
+    partida['adivinanza'] = ""
+    dibujante = partida['turno']
+    # Enviar la palabra al jugador que debe dibujar
+    emit('tu_turno', {'palabra': palabra, 'dibujante': dibujante, "tiempo": tiempo_por_ronda, "estado": "jugando"}, room=codigo_partida)
 
 # Evento de conexión (para manejar cuando un jugador se conecta)
 @socketio.on('connect')
@@ -93,60 +128,15 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
         return
 
     partida = partidas[codigo_partida]
-    if len(partida['jugadores']) >= 9:
+    if len(partida['jugadores']) >= partida["max_jugadores"]:
         emit('error', {'mensaje': 'La partida está llena'})
         return
 
     partida['jugadores'].append(nombre_jugador)
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
     emit('actualizar_jugadores', {'lista': f'{partida["jugadores"]}'}, room=codigo_partida)
-    print(partida['jugadores'])
 
 
-#------------------------------------------------alv--------------------------------------------
-# Ruta para obtener palabras y permitir selección
-@app.route('/seleccionar_palabra', methods=['POST'])
-def seleccionar_palabra():
-    datos = request.json
-    codigo_partida = datos['codigo_partida']
-    palabra_seleccionada = datos['palabra']
-
-    if codigo_partida not in partidas:
-        return jsonify({'error': 'Código de partida inválido'}), 400
-
-    partida = partidas[codigo_partida]
-    partida['palabra'] = palabra_seleccionada  # Guardar la palabra seleccionada
-
-    return jsonify({'mensaje': 'Palabra seleccionada correctamente'}), 200
-    
-# Evento para iniciar una ronda
-@socketio.on('iniciar_ronda')
-def iniciar_ronda(data):
-    codigo_partida = data.get('codigo_partida')
-    tiempo_por_ronda = data.get('tiempo_por_ronda')
-    rondas = data.get('rondas')
-
-    if codigo_partida not in partidas:
-        emit('error', {'mensaje': 'Código de partida inválido'})
-        return
-
-    partida = partidas[codigo_partida]
-    if partida['estado'] != 'jugando':
-        emit('error', {'mensaje': 'La partida no está en estado de juego'})
-        return
-
-    # Configurar el tiempo por ronda y el número de rondas
-    partida['tiempo_por_ronda'] = tiempo_por_ronda
-    partida['rondas'] = rondas
-
-    # Elegir una palabra para el dibujante
-    palabra = partida['palabra']
-    partida['dibujo'] = ""  # Limpiar dibujo
-    partida['adivinanza'] = ""
-    dibujante = partida['nombre_anfitrion']
-    
-    # Enviar la palabra al jugador que debe dibujar
-    emit('tu_turno', {'palabra': palabra, 'dibujante': dibujante}, room=codigo_partida)
 
 # Evento para manejar los dibujos en tiempo real
 @socketio.on('actualizar_dibujo')

@@ -35,9 +35,12 @@ export class PartidaService {
   }
 
   // Método para iniciar la partida
-  iniciarPartida(codigoPartida: string): Observable<any> {
+  iniciarPartida(codigoPartida: string, tiempo: string, rondas: string, numJugadores: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/iniciar_partida`, {
-      codigo_partida: codigoPartida
+      codigo_partida: codigoPartida,
+      tiempo_por_ronda: tiempo,
+      rondas: rondas,
+      numJugadores: numJugadores
     });
   }
 
@@ -95,8 +98,8 @@ export class PartidaService {
   }
 
   // Iniciar la ronda
-  iniciarRonda(codigoPartida: string, tiempoPorRonda: number, rondas: number): void {
-    this.socket.emit('iniciar_ronda', { codigo_partida: codigoPartida, tiempo_por_ronda: tiempoPorRonda, rondas: rondas });
+  iniciarRonda(codigoPartida: string, palabra: string): void {
+    this.socket.emit('iniciar_ronda', { codigo_partida: codigoPartida, palabra });
   }
 
   // Escuchar si la partida ha comenzado

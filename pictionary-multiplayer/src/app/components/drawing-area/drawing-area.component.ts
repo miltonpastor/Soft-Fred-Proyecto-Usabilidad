@@ -12,7 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 export class DrawingAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
   @Input() codigoPartida!: string; // Recibir el código de la partida como un @Input
-  @Input() usuarioQuePuedeDibujar!: string;
+  @Input() esEditable: boolean = false; // Nueva propiedad para controlar los permisos de edición
   private context!: CanvasRenderingContext2D;
   private isDrawing: boolean = false;
   private lastX: number = 0;
@@ -45,7 +45,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(event: MouseEvent): void {
-    if (this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.esEditable) {
       return;
     }
     this.isDrawing = true;
@@ -55,7 +55,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseMove(event: MouseEvent): void {
-    if (!this.isDrawing || this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.isDrawing || !this.esEditable) {
       return;
     }
     this.context.strokeStyle = this.brushColor;
@@ -77,7 +77,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseUp(event: MouseEvent): void {
-    if (this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.esEditable) {
       return;
     }
     this.isDrawing = false;
@@ -85,7 +85,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseLeave(event: MouseEvent): void {
-    if (this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.esEditable) {
       return;
     }
     this.isDrawing = false;
