@@ -16,8 +16,6 @@ export class EsperaComponent implements OnInit {
   codigoPartida: string = '';
   nombreJugador: string = '';
   public formOpciones!: FormGroup;
-  tiempoDibujo: number = 5;
-  rondas: number = 3;
   modalMessage: string = '';
 
   constructor(
@@ -42,20 +40,12 @@ export class EsperaComponent implements OnInit {
     this.modalService.jugadorTurno$.subscribe(nombre => {
       this.nombreJugador = nombre || '';
     });
-
-    this.formOpciones.get('tiempoDibujo')?.valueChanges.subscribe(value => {
-      this.tiempoDibujo = value;
-    });
-
-    this.formOpciones.get('rondas')?.valueChanges.subscribe(value => {
-      this.rondas = value;
-    });
   }
 
   private formBuild() {
     this.formOpciones = this._formBuilder.group({
       numeroPlayers: [{ value: 8, disabled: this.esEditable }],
-      tiempoDibujo: [{ value: 5, disabled: this.esEditable }],
+      tiempoDibujo: [{ value: 60, disabled: this.esEditable }],
       rondas: [{ value: 3, disabled: this.esEditable }]
     });
   }
@@ -75,19 +65,24 @@ export class EsperaComponent implements OnInit {
 
   iniciar() {
     if (this.esEditable) {
-      this.partidaService.iniciarPartida(this.codigoPartida, this.tiempoDibujo.toString(), this.rondas.toString(), this.formOpciones.get('numeroPlayers')?.value.toString())
+      this.partidaService.iniciarPartida(this.codigoPartida, this.formOpciones.get("tiempoDibujo")?.value.toString(), this.formOpciones.get("rondas")?.value.toString(), this.formOpciones.get('numeroPlayers')?.value.toString())
         .subscribe({
           next: (response) => {
-            console.log('Partida iniciada:', response);
             this.cambiarEstado.emit('seleccionandoPalabra');
             this.partidaService.enviarMensajeChat(this.codigoPartida, "System", `${this.nombreJugador} esta seleccionando la palabra.`);
           },
           error: (err) => {
-            console.error('Error al iniciar la partida:', err);
+            let errorMessage = 'Error al iniciar la partida';
+            if (err.error && err.error.error) {
+              errorMessage += ': ' + err.error.error;
+            } else if (err.message) {
+              errorMessage += ': ' + err.message;
+            } else {
+              errorMessage += ': Error desconocido';
+            }
+            alert(errorMessage);
           }
         });
-    } else {
-      console.log('No tienes permisos para iniciar la partida.');
     }
   }
 

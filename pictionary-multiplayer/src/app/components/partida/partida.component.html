@@ -2,11 +2,12 @@
   <!-- Top Bar -->
   <div class="row bg-white py-1 px-1 d-flex align-items-center">
     <div class="timer col-4 d-flex align-items-center justify-content-start">
-      <i class="bi bi-alarm" style="font-size: 1.8rem; padding-right: 8px"></i>
       Ronda 1 de 3
+      <i class="bi bi-alarm" style="font-size: 1.8rem; padding-left: 8px; padding-right: 8px"></i>
+      <span>{{ tiempoPorRonda }} s</span>
     </div>
-    <div class="current-word col-4 d-flex justify-content-center">Dibuja esto: <span class="word"> {{palabraAdivinar}}
-      </span>
+    <div class="current-word col-4 d-flex justify-content-center">
+      <span class="word">{{ palabraAdivinar }}</span>
     </div>
     <div class="settings-icon col-4 d-flex justify-content-end">
       <button class="boton-sin-estilos border-0" (click)="openModal()">
@@ -14,15 +15,15 @@
       </button>
     </div>
   </div>
-
   <!-- Main Content -->
   <div class="row mt-1">
     <!-- Left Panel: Player List -->
     <div class="col-2 p-0">
       <div class="panel-left me-1">
         <div *ngFor="let jugador of jugadores" class="player-card">
-          <span class="player-name">{{ jugador }}</span>
-          <span class="player-score">0 puntos</span>
+          <span class="player-name">{{ jugador.nombre }}</span>
+          <span class="player-score">{{ jugador.puntaje }}</span>
+          <span class="player-score">{{ jugador.avatar }}</span>
         </div>
       </div>
     </div>

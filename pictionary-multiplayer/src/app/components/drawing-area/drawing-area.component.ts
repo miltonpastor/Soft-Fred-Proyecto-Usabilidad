@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./drawing-area.component.css'],
   standalone: false
 })
+
 export class DrawingAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
   @Input() codigoPartida!: string; // Recibir el código de la partida como un @Input
@@ -29,7 +30,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.nombreJugador = params['user'] || '';
+      this.nombreJugador = params['jugador'] || '';
     });
 
     this.context = this.canvas.nativeElement.getContext('2d', { willReadFrequently: true })!;
@@ -138,7 +139,10 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
 
   private sendDrawing(): void {
     const drawing = this.canvas.nativeElement.toDataURL();
-    console.log('Enviando dibujo:', this.nombreJugador);
+    console.log('Enviando dibujo nombre jugador:', this.nombreJugador);
+    console.log('Enviando dibujo codigo partida:', this.codigoPartida);
+    console.log('Enviando dibujo:', drawing);
+
 
     this.partidaService.actualizarDibujo(this.codigoPartida, drawing, this.nombreJugador);
   }

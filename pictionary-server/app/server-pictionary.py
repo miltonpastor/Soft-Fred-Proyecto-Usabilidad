@@ -9,6 +9,13 @@ app = Flask(__name__)
 CORS(app)  # Permitir CORS para todas las rutas
 socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
 
+# clase Jugador
+class Jugador:
+    def __init__(self, nombre, avatar='', puntaje=0):
+        self.nombre = nombre
+        self.avatar = avatar
+        self.puntaje = 0
+
 # Diccionario para manejar las partidas
 partidas = {}
 
@@ -33,7 +40,7 @@ def crear_partida():
     # Guardar la partida en memoria
     partidas[codigo_partida] = {
         'nombre_anfitrion': nombre_anfitrion,
-        'jugadores': [nombre_anfitrion],
+        'jugadores': [],
         "max_jugadores": 5,
         'tiempo_por_ronda': 0,
         'ronda_actual': 0,
@@ -75,7 +82,7 @@ def iniciar_partida():
 
     partida['estado'] = 'jugando'
     partida['tiempo_por_ronda'] = tiempo_por_ronda
-    partida['rondas'] = rondas
+    partida['rondas'] = int(rondas)
     partida['max_jugadores'] = jugadores
     partida['ronda_actual'] += 1
     mensaje = f'{partida["turno"]} está seleccionando la palabra'
@@ -122,7 +129,7 @@ def handle_disconnect():
 
 # Evento para unirse a una partida y unirse a la sala del juego
 @socketio.on('unirse_partida_socket')
-def unirse_partida_socket(codigo_partida, nombre_jugador):
+def unirse_partida_socket(codigo_partida, nombre_jugador, avatar):
     if codigo_partida not in partidas:
         emit('error', {'mensaje': 'Código de partida inválido'})
         return
@@ -131,10 +138,17 @@ def unirse_partida_socket(codigo_partida, nombre_jugador):
     if len(partida['jugadores']) >= partida["max_jugadores"]:
         emit('error', {'mensaje': 'La partida está llena'})
         return
+    
+    if len(partida['jugadores']) == 0:
+        partida['mensajes'].append({'nombre_jugador': nombre_jugador, 'mensaje': 'ha creado la partida'})
+    else:
+        partida['mensajes'].append({'nombre_jugador': nombre_jugador, 'mensaje': 'se ha unido a la partida'})
 
-    partida['jugadores'].append(nombre_jugador)
+    partida['jugadores'].append(Jugador(nombre_jugador, avatar))
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
-    emit('actualizar_jugadores', {'lista': f'{partida["jugadores"]}'}, room=codigo_partida)
+    # Convertir objetos Jugador a diccionarios
+    jugadores_serializados = [jugador.__dict__ for jugador in partida['jugadores']]
+    emit('actualizar_jugadores', {'lista': jugadores_serializados}, room=codigo_partida)
 
 
 
@@ -149,7 +163,7 @@ def actualizar_dibujo(data):
         return
 
     partida = partidas[codigo_partida]
-    if partida['nombre_anfitrion'] != jugador:
+    if partida['turno'] != jugador:
         return
     
     partida['dibujo'] = dibujo
@@ -162,20 +176,20 @@ def adivinar(codigo_partida,nombre, intento ):
     if codigo_partida not in partidas:
         return
     
-    
-    print('Corriendo funcion adivinar', codigo_partida)
-
     partida = partidas[codigo_partida] # Obtenemos los datos de la partida
     #comprobar si el intento (palabra ingresada) es igual a la palabra a adivinar (partida['palabra']) 
     if intento.lower() == partida['palabra'].lower():  
-        #emit('acertado', {'mensaje': f'{request.sid} ha adivinado la palabra'}, room=codigo_partida)
-        emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': 'ha adivinado la palabra' } , room=codigo_partida)
+        for jugador in partida['jugadores']:
+            if jugador.nombre == nombre:
+                jugador.puntaje += 80
+                continue
+            jugador.puntaje += 20
+        partida['turno'] = nombre
         partida['adivinanza'] = intento
+        emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': 'ha adivinado la palabra' } , room=codigo_partida)
         return 
     
-    print('Palabra a adivinar', partida['palabra'])
-
-    agregarMensaje(nombre, intento, partida);
+    agregarMensaje(nombre, intento, codigo_partida)
     emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': intento } , room=codigo_partida)
 
 
@@ -193,8 +207,9 @@ def obtener_todo_chat(codigo_partida):
 
 
 # Función para agregar mensajes
-def agregarMensaje(nombre_jugador, mensaje, partida):
+def agregarMensaje(nombre_jugador, mensaje, codigo_partida):
     # Al agregar un mensaje
+    partida = partidas[codigo_partida]
     partida['mensajes'].append({'nombre_jugador': nombre_jugador, 'mensaje': mensaje})
 
 # ------------------------------------------------

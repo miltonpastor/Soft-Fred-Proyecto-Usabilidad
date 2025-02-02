@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PartidaService } from '../../services/partida.service'; // Asegúrate de ajustar la ruta según tu estructura de carpetas
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,7 +12,6 @@ export class SelectWordPageComponent implements OnInit {
   opciones: any[] = [];
   codigoPartida: string | null = null; // Código de la partida obtenido de la URL
   nombreJugador: string | null = null; // Nombre del jugador obtenido de la URL
-  // @Output() cambiarEstado = new EventEmitter<string>();
 
   constructor(private partidaService: PartidaService,
     private route: ActivatedRoute
@@ -21,7 +20,6 @@ export class SelectWordPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.codigoPartida = params['codigo_partida'] || null;
-      this.nombreJugador = params['nombre_jugador'] || null;
     });
 
     this.partidaService.getOpcionesPalabras().subscribe({
@@ -38,7 +36,6 @@ export class SelectWordPageComponent implements OnInit {
   seleccionarPalabra(palabra: string): void {
     if (this.codigoPartida) {
       this.partidaService.iniciarRonda(this.codigoPartida, palabra);
-      // this.cambiarEstado.emit('jugando');
     }
   }
 }

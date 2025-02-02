@@ -29,7 +29,7 @@
 
 
     <app-unirse-partida *ngIf="showJoin" (partidaUnida)="onPartidaUnida($event)" [nombreJugador]="username"
-      [onClose]="handleCloseJoin.bind(this)"></app-unirse-partida>
+      [avatar]="selectedAvatar" [onClose]="handleCloseJoin.bind(this)"></app-unirse-partida>
   </div>
 
   <!-- info -->

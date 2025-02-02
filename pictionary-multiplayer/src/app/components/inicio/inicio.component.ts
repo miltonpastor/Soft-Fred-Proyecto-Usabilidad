@@ -44,7 +44,7 @@ export class InicioComponent {
         if (codigoPartida) {
           this.modalService.setJugadorTurno(this.username);
           this.modalService.setCodigoPartida(codigoPartida);
-          this.partidaService.unirseASala(codigoPartida, this.username);
+          this.partidaService.unirseASala(codigoPartida, this.username, this.selectedAvatar);
           this.OnNavigateToPartida();
         }
       },
