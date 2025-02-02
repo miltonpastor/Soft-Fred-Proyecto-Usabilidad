@@ -144,4 +144,14 @@ export class PartidaService {
     });
   }
 
+
+  escucharFinPartida(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('fin_partida', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+
 }

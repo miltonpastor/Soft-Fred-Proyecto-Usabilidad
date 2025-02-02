@@ -41,7 +41,7 @@ def crear_partida():
     partidas[codigo_partida] = {
         'nombre_anfitrion': nombre_anfitrion,
         'jugadores': [],
-        "max_jugadores": 5,
+        "max_jugadores": 2,
         'tiempo_por_ronda': 0,
         'ronda_actual': 0,
         "rondas": 0,
@@ -83,8 +83,9 @@ def iniciar_partida():
     partida['estado'] = 'jugando'
     partida['tiempo_por_ronda'] = tiempo_por_ronda
     partida['rondas'] = int(rondas)
-    partida['max_jugadores'] = jugadores
+    partida['max_jugadores'] = int(jugadores)
     partida['ronda_actual'] += 1
+    partida['estado'] = 'jugando'
     mensaje = f'{partida["turno"]} está seleccionando la palabra'
     partida['mensajes'].append({'nombre_jugador': 'Sistema', 'mensaje': mensaje})
 
@@ -94,13 +95,11 @@ def iniciar_partida():
 def iniciar_ronda(data):
     codigo_partida = data.get('codigo_partida')
     palabra = data.get('palabra')
-    
     if codigo_partida not in partidas:
         emit('error', {'mensaje': 'Código de partida inválido'})
         return
     partida = partidas[codigo_partida]
-    
-    if partida['ronda_actual'] >= partida['rondas']:
+    if partida['ronda_actual'] > partida['rondas']:
         emit('fin_partida', {'mensaje': 'Fin de la partida'})
         return
     if partida['estado'] != 'jugando':
@@ -154,7 +153,7 @@ def unirse_partida_socket(codigo_partida, nombre_jugador, avatar):
     join_room(codigo_partida)  # Unir al jugador a la sala del juego
     # Convertir objetos Jugador a diccionarios
     jugadores_serializados = [jugador.__dict__ for jugador in partida['jugadores']]
-    emit('actualizar_jugadores', {'lista': jugadores_serializados}, room=codigo_partida)
+    emit('actualizar_jugadores', {'lista': jugadores_serializados, 'estado': partida['estado']}, room=codigo_partida)
 
 
 
@@ -190,11 +189,16 @@ def adivinar(codigo_partida,nombre, intento ):
                 jugador.puntaje += 80
                 continue
             jugador.puntaje += 20
-        siguiente_jugador = random.choice(partida['jugadores']).nombre
-        partida['turno'] = siguiente_jugador
-        partida['ronda_actual'] += 1
-        partida['adivinanza'] = intento
+        # fin de la ronda
         jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
+        if (partida['ronda_actual'] >= partida['rondas']):
+            partida['mensajes'].append({'nombre_jugador': "Game", 'mensaje': 'la partida ha finalizado'})
+            emit('fin_partida', {'mensaje': 'Fin de la partida', "jugadores": jugadores}, room=codigo_partida)
+            return
+        partida['ronda_actual'] += 1
+        partida['turno'] = nombre
+        partida['adivinanza'] = intento
+
         emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': 'ha adivinado la palabra', "jugadores": jugadores } , room=codigo_partida)
         return 
     
@@ -215,12 +219,17 @@ def temporizador_terminado(data):
     for jugador in partida['jugadores']:
         jugador.puntaje += 15
     
+        # fin de la ronda
+
+    jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
+    if partida['ronda_actual'] >= partida['rondas']:
+        partida['mensajes'].append({'nombre_jugador': "Game", 'mensaje': 'la partida ha finalizado'})
+        emit('fin_partida', {'mensaje': 'Fin de la partida', "jugadores": jugadores}, room=codigo_partida)
+        return
     # Seleccionar el siguiente jugador de manera aleatoria
+    partida['ronda_actual'] += 1
     siguiente_jugador = random.choice(partida['jugadores']).nombre
     partida['turno'] = siguiente_jugador
-    partida['ronda_actual'] += 1
-    
-    jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
     emit('temporizador_terminado', {'nombre_jugador': siguiente_jugador, "jugadores": jugadores}, room=codigo_partida)
 
 # Evento que devuelve todo el chat

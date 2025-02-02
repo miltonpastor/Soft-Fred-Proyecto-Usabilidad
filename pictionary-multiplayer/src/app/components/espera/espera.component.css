@@ -1,7 +1,7 @@
 .waiting-contenedor {
   height: 100%;
   padding: 20px;
-  background-color: #35394a;
+  background-color: var(--dark-bg);
   color: #fff;
   border-radius: 4px;
   position: relative;
@@ -74,11 +74,11 @@
 }
 
 .boton-invitar {
-  background-color: #1671C5;
+  background-color: var(--lightBlue-color);
 }
 
 .boton-iniciar {
-  background-color: #53E237;
+  background-color: var(--success-color);
 }
 
 .alert {

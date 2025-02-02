@@ -139,11 +139,6 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
 
   private sendDrawing(): void {
     const drawing = this.canvas.nativeElement.toDataURL();
-    console.log('Enviando dibujo nombre jugador:', this.nombreJugador);
-    console.log('Enviando dibujo codigo partida:', this.codigoPartida);
-    console.log('Enviando dibujo:', drawing);
-
-
     this.partidaService.actualizarDibujo(this.codigoPartida, drawing, this.nombreJugador);
   }
 

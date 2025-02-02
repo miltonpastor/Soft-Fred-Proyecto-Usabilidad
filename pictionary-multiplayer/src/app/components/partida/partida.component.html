@@ -83,7 +83,7 @@
 
 <!-- select word page -->
 <div *ngIf="estadoPartida === 'seleccionandoPalabra' &&  nombreJugador == jugadorTurno" class="modal-overlay">
-  <app-select-word-page></app-select-word-page>
+  <app-select-word-page [nombreJugador]="nombreJugador" [codigoPartida]="codigoPartida"></app-select-word-page>
 </div>
 
 <!-- Reproductor de música de fondo (oculto) -->

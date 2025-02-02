@@ -53,8 +53,19 @@ export class PartidaComponent implements OnInit, OnDestroy {
     });
 
     this.partidaSubscription.add(
+      this.partidaService.escucharFinPartida().subscribe(data => {
+        this.jugadores = data.jugadores; // Actualizar la lista de jugadores
+        this.estadoPartida = 'finPartida'; // Actualizar el estado de la partida
+      })
+    );
+
+
+    this.partidaSubscription.add(
       this.partidaService.escucharActualizacionJugadores().subscribe(data => {
         this.jugadores = data.lista;
+        if (this.nombreJugador !== this.jugadorTurno) {
+          this.estadoPartida = data.estado;
+        }
         this.partidaService.obtenerTodoChat(this.codigoPartida);
       })
     );
@@ -74,7 +85,6 @@ export class PartidaComponent implements OnInit, OnDestroy {
           this.jugadores = jugadores;
           this.modalService.setJugadorTurno(this.jugadorTurno);
           this.palabraAdivinar = 'Intenta Adivinar la Palabra';
-          this.tiempoPorRonda = 0;
         }
       })
     );
@@ -90,9 +100,9 @@ export class PartidaComponent implements OnInit, OnDestroy {
       this.estadoPartida = 'seleccionandoPalabra';
       this.jugadorTurno = nombre_jugador;
       this.jugadores = jugadores;
+      console.log('Temporizador terminado', data);
       this.modalService.setJugadorTurno(this.jugadorTurno);
       this.palabraAdivinar = 'Intenta Adivinar la Palabra';
-      this.tiempoPorRonda = 0;
     });
 
     this.esEditable = this.nombreJugador === this.jugadorTurno;
@@ -131,6 +141,8 @@ export class PartidaComponent implements OnInit, OnDestroy {
     this.estadoPartida = data.estado;
     this.esEditable = this.nombreJugador === this.jugadorTurno;
     this.iniciarTemporizador();
+    console.log('Iniciando ronda', data.dibujante, data.palabra, data.tiempo, data.ronda, data.estado);
+
   }
 
 
@@ -138,11 +150,12 @@ export class PartidaComponent implements OnInit, OnDestroy {
   iniciarTemporizador(): void {
     clearInterval(this.intervalId); // Limpiar cualquier intervalo previo
     this.intervalId = setInterval(() => {
-      if (this.tiempoPorRonda > 0) {
-        this.tiempoPorRonda--;
-      } else {
-        clearInterval(this.intervalId);
-        this.partidaService.notificarTemporizadorTerminado(this.codigoPartida, this.tiempoPorRonda);
+      if (this.estadoPartida === 'jugando') {
+        if (this.tiempoPorRonda > 0) {
+          this.tiempoPorRonda--;
+        } else {
+          this.partidaService.notificarTemporizadorTerminado(this.codigoPartida, this.tiempoPorRonda);
+        }
       }
     }, 1000);
   }
