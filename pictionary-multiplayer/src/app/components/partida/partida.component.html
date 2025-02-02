@@ -2,7 +2,7 @@
   <!-- Top Bar -->
   <div class="row bg-white py-1 px-1 d-flex align-items-center">
     <div class="timer col-4 d-flex align-items-center justify-content-start">
-      Ronda 1 de 3
+      Ronda {{rondaActual}}
       <i class="bi bi-alarm" style="font-size: 1.8rem; padding-left: 8px; padding-right: 8px"></i>
       <span>{{ tiempoPorRonda }} s</span>
     </div>
@@ -33,14 +33,12 @@
       <div class="center-panel me-1">
         @if (estadoPartida === 'esperando') {
         <!-- Pantalla de espera -->
-        <app-espera [esEditable]="nombreJugador == jugadorTurno"
-          (cambiarEstado)="cambiarEstadoPartida($event)"></app-espera>
+        <app-espera [esEditable]="esEditable" (cambiarEstado)="cambiarEstadoPartida($event)"></app-espera>
         }@else if (estadoPartida === 'jugando') {
         <!-- Drawing Area -->
-        <app-drawing-area [codigoPartida]="codigoPartida"
-          [esEditable]="nombreJugador == jugadorTurno"></app-drawing-area>
+        <app-drawing-area [codigoPartida]="codigoPartida" [esEditable]="esEditable"></app-drawing-area>
         }@else {
-        <div>Ahora necesito que si </div>
+        <app-resumen [jugadores]="jugadores"></app-resumen>
         }
       </div>
     </div>
@@ -70,10 +68,11 @@
           </div>
           <div class="row m-1">
             <div class="col-md-8 col-sm-12 p-0">
-              <input type="text" [(ngModel)]="mensajeChat" class="w-100" placeholder="Escribe aquí" />
+              <input type="text" [(ngModel)]="mensajeChat" class="w-100" placeholder="Escribe aquí"
+                [disabled]="esEditable" />
             </div>
             <div class="col-md-4 col-sm-12 p-0">
-              <button class="w-100" (click)="enviarMensajeChat()">Enviar</button>
+              <button class="w-100" (click)="enviarMensajeChat()" [disabled]="esEditable">Enviar</button>
             </div>
           </div>
         </div>

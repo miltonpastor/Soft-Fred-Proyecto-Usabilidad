@@ -12,6 +12,7 @@ interface Player {
   standalone: false
 })
 export class ResumenComponent implements OnInit {
+  players: Player[] = [];
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }

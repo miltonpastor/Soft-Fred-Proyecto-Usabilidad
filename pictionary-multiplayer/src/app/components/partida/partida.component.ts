@@ -5,12 +5,8 @@ import { Subscription } from 'rxjs';
 import { Partida } from '../../models/partida.model';
 import { Mensaje } from '../../models/mensaje.model';
 import { ModalService } from '../../services/modal.service';
+import { Jugador } from '../../models/Jugador.model';
 
-interface Jugador {
-  nombre: string;
-  avatar: string;
-  puntaje: number;
-}
 
 
 @Component({
@@ -25,6 +21,8 @@ export class PartidaComponent implements OnInit, OnDestroy {
   jugadorTurno: string = '';
   palabraAdivinar: string = 'Intenta Adivinar la Palabra';
   intervalId: any;
+  rondaActual: number = 0;
+  esEditable: boolean = false;
 
   intento: string = '';
   tiempoPorRonda: number = 0;  // Ejemplo de valor
@@ -69,11 +67,13 @@ export class PartidaComponent implements OnInit, OnDestroy {
     this.partidaSubscription.add(
       this.partidaService.escucharChat().subscribe(data => {
         this.mensajes.push(data);
-        const { nombre_jugador, mensaje } = data;
-        if (mensaje.includes('ha adivinado la palabra')) {
+        if (data.mensaje.includes('ha adivinado la palabra')) {
+          const { nombre_jugador, jugadores } = data;
           this.estadoPartida = 'seleccionandoPalabra';
           this.jugadorTurno = nombre_jugador;
+          this.jugadores = jugadores;
           this.modalService.setJugadorTurno(this.jugadorTurno);
+          this.palabraAdivinar = 'Intenta Adivinar la Palabra';
           this.tiempoPorRonda = 0;
         }
       })
@@ -84,6 +84,18 @@ export class PartidaComponent implements OnInit, OnDestroy {
         this.manejarIniciarRonda(data);
       })
     );
+
+    this.partidaService.escucharTemporizadorTerminado().subscribe(data => {
+      const { nombre_jugador, jugadores } = data;
+      this.estadoPartida = 'seleccionandoPalabra';
+      this.jugadorTurno = nombre_jugador;
+      this.jugadores = jugadores;
+      this.modalService.setJugadorTurno(this.jugadorTurno);
+      this.palabraAdivinar = 'Intenta Adivinar la Palabra';
+      this.tiempoPorRonda = 0;
+    });
+
+    this.esEditable = this.nombreJugador === this.jugadorTurno;
   }
 
   ngOnDestroy(): void {
@@ -100,9 +112,6 @@ export class PartidaComponent implements OnInit, OnDestroy {
   enviarMensajeChat(mensaje: string = ''): void {
     // Usar el parámetro `mensaje` si está definido
     const mensajeAEnviar = mensaje.trim() || this.mensajeChat.trim();
-    console.log('Mensaje a enviar:', mensajeAEnviar);
-    console.log('Mensaje chat:', this.nombreJugador, this.codigoPartida);
-
     this.partidaService.enviarMensajeChat(this.codigoPartida, this.nombreJugador, mensajeAEnviar);
     // Limpiar el campo
     if (!mensaje.trim()) {
@@ -115,14 +124,12 @@ export class PartidaComponent implements OnInit, OnDestroy {
   manejarIniciarRonda(data: any): void {
     if (data.dibujante === this.nombreJugador) {
       this.palabraAdivinar = 'Dibuja esto: ' + data.palabra;
-    } else {
-      this.estadoPartida = 'Adivina la Palabra';
     }
     this.jugadorTurno = data.dibujante;
     this.tiempoPorRonda = data.tiempo;
-    console.log('Iniciando ronda:', data.tiempo);
-
+    this.rondaActual = data.ronda;
     this.estadoPartida = data.estado;
+    this.esEditable = this.nombreJugador === this.jugadorTurno;
     this.iniciarTemporizador();
   }
 
@@ -135,6 +142,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
         this.tiempoPorRonda--;
       } else {
         clearInterval(this.intervalId);
+        this.partidaService.notificarTemporizadorTerminado(this.codigoPartida, this.tiempoPorRonda);
       }
     }, 1000);
   }

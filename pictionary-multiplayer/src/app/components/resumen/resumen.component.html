@@ -1,0 +1,7 @@
+<div *ngIf="jugadores && jugadores.length > 0">
+    <div *ngFor="let jugador of jugadores">
+        <img [src]="jugador.avatar" alt="{{jugador.nombre}}'s avatar" width="50" height="50">
+        <span>{{jugador.nombre}}</span>
+        <span>{{jugador.puntaje}}</span>
+    </div>
+</div>

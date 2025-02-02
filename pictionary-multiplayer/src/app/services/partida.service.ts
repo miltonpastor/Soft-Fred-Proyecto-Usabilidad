@@ -67,6 +67,20 @@ export class PartidaService {
     return this.http.get(`${this.apiUrl}/palabras`);
   }
 
+
+  // Emitir evento cuando el temporizador llegue a cero
+  notificarTemporizadorTerminado(codigoPartida: string, tiempoActual: number): void {
+    this.socket.emit('temporizador_terminado', { codigo_partida: codigoPartida, tiempo_actual: tiempoActual });
+  }
+  // Escuchar notificación del servidor
+  escucharTemporizadorTerminado(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('temporizador_terminado', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
   unirseASala(codigoPartida: string, nombreJugador: string, avatar: string): void {
     this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador, avatar);
   }

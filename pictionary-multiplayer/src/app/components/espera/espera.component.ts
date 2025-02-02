@@ -13,6 +13,7 @@ import { PartidaService } from '../../services/partida.service';
 export class EsperaComponent implements OnInit {
   @Input() esEditable: boolean = false; // Nueva propiedad para controlar los permisos de edición
   @Output() cambiarEstado = new EventEmitter<string>();
+
   codigoPartida: string = '';
   nombreJugador: string = '';
   public formOpciones!: FormGroup;
@@ -85,6 +86,8 @@ export class EsperaComponent implements OnInit {
         });
     }
   }
+
+
 
   copyToClipboard() {
     if (this.codigoPartida) {

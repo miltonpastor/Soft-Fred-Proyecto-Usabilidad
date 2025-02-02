@@ -1,4 +1,5 @@
-<div class="waiting-contenedor container">
+<div class="waiting-contenedor container" role="dialog" aria-labelledby="esperaTitle" aria-modal="true">
+  <h2 id="esperaTitle" tabindex="0">Configuración de la Partida</h2>
   <form [formGroup]="formOpciones" (ngSubmit)="iniciar()">
 
     <div class="campo row">
@@ -7,10 +8,8 @@
         Jugadores
       </label>
       <div class="col-sm-12 col-md-7">
-        <select formControlName="numeroPlayers" tabindex="0">
-          @for (item of [2,3,4,5,6,7,8,9,10]; track $index) {
-          <option [value]="item"> {{item}} </option>
-          }
+        <select formControlName="numeroPlayers" aria-label="Seleccionar número de jugadores" tabindex="0">
+          <option *ngFor="let item of [2,3,4,5,6,7,8,9,10]" [value]="item"> {{item}} </option>
         </select>
       </div>
     </div>
@@ -49,7 +48,7 @@
           tabindex="0" [disabled]="!esEditable" accesskey="v">Invitar</button>
       </div>
     </div>
-    <div *ngIf="modalMessage" class="alert alert-success mt-3" role="alert">
+    <div *ngIf="modalMessage" class="alert alert-success mt-3" role="alert" tabindex="0">
       {{ modalMessage }}
     </div>
   </form>

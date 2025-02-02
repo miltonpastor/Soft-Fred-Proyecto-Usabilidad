@@ -114,8 +114,9 @@ def iniciar_ronda(data):
     partida['dibujo'] = ""  # Limpiar dibujo
     partida['adivinanza'] = ""
     dibujante = partida['turno']
+    ronda = partida['ronda_actual']
     # Enviar la palabra al jugador que debe dibujar
-    emit('tu_turno', {'palabra': palabra, 'dibujante': dibujante, "tiempo": tiempo_por_ronda, "estado": "jugando"}, room=codigo_partida)
+    emit('tu_turno', {'palabra': palabra, 'dibujante': dibujante, "tiempo": tiempo_por_ronda, "estado": "jugando", "ronda": ronda}, room=codigo_partida)
 
 # Evento de conexión (para manejar cuando un jugador se conecta)
 @socketio.on('connect')
@@ -137,6 +138,11 @@ def unirse_partida_socket(codigo_partida, nombre_jugador, avatar):
     partida = partidas[codigo_partida]
     if len(partida['jugadores']) >= partida["max_jugadores"]:
         emit('error', {'mensaje': 'La partida está llena'})
+        return
+    
+    nombres_existentes = [jugador.nombre for jugador in partida['jugadores']]
+    if nombre_jugador in nombres_existentes:
+        emit('error', {'mensaje': 'El nombre de usuario ya está en uso'})
         return
     
     if len(partida['jugadores']) == 0:
@@ -184,16 +190,38 @@ def adivinar(codigo_partida,nombre, intento ):
                 jugador.puntaje += 80
                 continue
             jugador.puntaje += 20
-        partida['turno'] = nombre
+        siguiente_jugador = random.choice(partida['jugadores']).nombre
+        partida['turno'] = siguiente_jugador
+        partida['ronda_actual'] += 1
         partida['adivinanza'] = intento
-        emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': 'ha adivinado la palabra' } , room=codigo_partida)
+        jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
+        emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': 'ha adivinado la palabra', "jugadores": jugadores } , room=codigo_partida)
         return 
     
     agregarMensaje(nombre, intento, codigo_partida)
     emit('mensaje_chat', {'nombre_jugador': nombre, 'mensaje': intento } , room=codigo_partida)
 
 
-        # Aquí puedes agregar la lógica de finalizar la ronda si la palabra es adivinada
+@socketio.on('temporizador_terminado')
+def temporizador_terminado(data):
+    codigo_partida = data.get('codigo_partida')
+    tiempo_actual = data.get('tiempo_actual')
+    if tiempo_actual != 0:
+        return 
+    if codigo_partida not in partidas:
+        return
+    
+    partida = partidas[codigo_partida]
+    for jugador in partida['jugadores']:
+        jugador.puntaje += 15
+    
+    # Seleccionar el siguiente jugador de manera aleatoria
+    siguiente_jugador = random.choice(partida['jugadores']).nombre
+    partida['turno'] = siguiente_jugador
+    partida['ronda_actual'] += 1
+    
+    jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
+    emit('temporizador_terminado', {'nombre_jugador': siguiente_jugador, "jugadores": jugadores}, room=codigo_partida)
 
 # Evento que devuelve todo el chat
 @socketio.on('obtener_todo_chat')

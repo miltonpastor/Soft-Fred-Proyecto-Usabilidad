@@ -1,7 +1,7 @@
 .homePage {
     width: 100%;
     min-height: 100vh;
-    background-image: url("../../../assets/backgroundV2.png");
+    background-image: url("../../../../public/backgroundV2.ico");
     background-position: top;
     background-size: 100% 45vh;
     background-repeat: no-repeat;
@@ -21,12 +21,16 @@ main {
     align-items: space-between;
 }
 
-footer {
-    padding: 10px;
-    /* padding: 1rem; */
+/* Estilos para el footer */
+.footer {
+    color: var(--light-text);
+    /* Asegúrate de definir esta variable en tu :root */
+    padding: 20px;
     text-align: center;
 }
 
-footer p {
-    margin: 0.5rem 0;
+.footer p {
+    font-size: 1rem;
+    /* Tamaño de fuente más grande */
+    margin: 10px 0;
 }

@@ -5,12 +5,9 @@
   flex-direction: column;
   gap: 1rem;
   text-align: center;
-  /* background-color: rebeccapurple; */
-  /* Texto claro */
   border-radius: 10px;
   padding: 20px;
 }
-
 
 .container-form {
   min-width: 38rem;
@@ -20,10 +17,8 @@
   gap: 1rem;
   margin: auto;
   text-align: center;
-  background: var(--darkBlue-color);
-  /* Fondo oscuro */
-  color: #ffffff;
-  /* Texto claro */
+  background: var(--dark-bg);
+  color: var(--light-text);
   box-shadow: 0 10px 15px 0 rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   padding: 25px;
@@ -65,7 +60,7 @@
   width: 100%;
   height: 50px;
   border-radius: 5px;
-  border: none;
+  border: 1px solid var(--secondary-color);
   padding: 0 10px;
   font-size: 1rem;
   font-family: Arial, sans-serif;
@@ -75,6 +70,9 @@
 .container-username button {
   height: 50px;
   width: 50px;
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: none;
   border-radius: 30%;
 }
 
@@ -114,7 +112,6 @@
   gap: 1rem;
 }
 
-
 .container-info .card-info {
   width: 30rem;
   height: 200px;
@@ -122,15 +119,11 @@
   flex-direction: column;
   gap: 0.3rem;
   text-align: center;
-  background: var(--lightBlue-color);
-  /* Fondo oscuro */
-  color: #ffffff;
-  /* Texto claro */
+  background: var(--info-color);
+  color: var(--light-text);
   border-radius: 10px;
   padding: 15px;
 }
-
-/* CLip */
 
 .modal {
   position: fixed;
@@ -195,4 +188,78 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
+}
+
+/* Media Queries */
+@media (max-width: 1024px) {
+  .container-form {
+    min-width: 30rem;
+  }
+
+  .container-info .card-info {
+    width: 25rem;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-form {
+    min-width: 20rem;
+    padding: 15px;
+  }
+
+  .container-info .card-info {
+    width: 20rem;
+    height: auto;
+  }
+
+  .container-avatar {
+    flex-direction: row;
+  }
+
+  .container-username {
+    flex-direction: row;
+  }
+
+  .container-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-form {
+    min-width: 20rem;
+    padding: 10px;
+  }
+
+  .container-avatar {
+    flex-direction: row;
+  }
+
+  .container-info .card-info {
+    width: 15rem;
+    height: auto;
+  }
+
+  .avatar {
+    font-size: 3rem;
+    width: 80px;
+    height: 80px;
+  }
+
+  .container-username input {
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .container-avatar button,
+  .container-username button {
+    height: 40px;
+    width: 40px;
+  }
+
+  .container-buttons button {
+    padding: 8px 10px;
+    font-size: 1rem;
+  }
 }

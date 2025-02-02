@@ -1,22 +1,18 @@
 .unirse-partida {
-  background-color: #1f1f1f;
-  /* Fondo oscuro para el cuadro */
-  color: #ffffff;
-  /* Texto claro */
+  background-color: var(--dark-bg);
+  color: var(--light-text);
   padding: 20px;
   border-radius: 10px;
   max-width: 400px;
   margin: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Sombra sutil */
   text-align: center;
 }
 
 .unirse-partida h2 {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #ff9800;
-  /* Título en un color destacado (naranja) */
+  color: var(--warning-color);
 }
 
 .unirse-partida .input {
@@ -24,12 +20,9 @@
   padding: 10px;
   margin-bottom: 15px;
   font-size: 16px;
-  background-color: #2b2b2b;
-  /* Fondo oscuro para el input */
-  color: #ffffff;
-  /* Texto claro */
-  border: 1px solid #444;
-  /* Borde sutil */
+  background-color: var(--darkBlue-color);
+  color: var(--light-text);
+  border: 1px solid var(--secondary-color);
   border-radius: 5px;
 }
 
@@ -44,30 +37,25 @@
 }
 
 .unirse-partida .btn.primary {
-  background-color: #4caf50;
-  /* Botón principal en verde */
-  color: white;
+  background-color: var(--success-color);
+  color: var(--light-text);
 }
 
 .unirse-partida .btn.primary:hover {
-  background-color: #66bb6a;
-  /* Verde más claro al pasar el cursor */
+  background-color: var(--greenBtn-color);
 }
 
 .unirse-partida .btn.primary:disabled {
-  background-color: #444;
-  /* Botón deshabilitado */
-  color: #888;
+  background-color: var(--secondary-color);
+  color: var(--dark-text);
   cursor: not-allowed;
 }
 
 .unirse-partida .btn.secondary {
-  background-color: #444;
-  /* Botón secundario oscuro */
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--light-text);
 }
 
 .unirse-partida .btn.secondary:hover {
-  background-color: #555;
-  /* Tonalidad más clara al pasar el cursor */
+  background-color: var(--darkBlue-color);
 }
