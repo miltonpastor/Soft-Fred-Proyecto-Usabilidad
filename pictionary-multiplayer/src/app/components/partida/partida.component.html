@@ -24,7 +24,7 @@
         <div class="player-card" [ngClass]="{
             'mensaje-par': $index % 2 === 0,
           }">
-          <span> #1 </span>
+          <span> #{{$index+1}} </span>
 
           <div class="name-score">
             <span class="player-name">{{ jugador.nombre }}</span>
@@ -80,10 +80,11 @@
           </div>
           <div class="row mx-1 mt-1">
             <div class="col-8 p-0">
-              <input type="text" [(ngModel)]="mensajeChat" class="w-100" placeholder="Escribe aquí" />
+              <input type="text" [(ngModel)]="mensajeChat" class="w-100" placeholder="Escribe aquí"
+                [disabled]="esEditable" />
             </div>
             <div class="col-4 p-0">
-              <button class="w-100" (click)="enviarMensajeChat()">Enviar</button>
+              <button class="w-100" (click)="enviarMensajeChat()" [disabled]="esEditable">Enviar</button>
             </div>
           </div>
         </div>

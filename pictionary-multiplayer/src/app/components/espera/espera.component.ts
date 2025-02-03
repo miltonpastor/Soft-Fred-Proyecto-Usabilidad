@@ -70,7 +70,6 @@ export class EsperaComponent implements OnInit {
         .subscribe({
           next: (response) => {
             this.cambiarEstado.emit('seleccionandoPalabra');
-            this.partidaService.enviarMensajeChat(this.codigoPartida, "Game", `${this.nombreJugador} esta seleccionando la palabra.`);
           },
           error: (err) => {
             let errorMessage = 'Error al iniciar la partida';
@@ -86,9 +85,6 @@ export class EsperaComponent implements OnInit {
         });
     }
   }
-
-
-
   copyToClipboard() {
     if (this.codigoPartida) {
       navigator.clipboard.writeText(this.codigoPartida).then(() => {

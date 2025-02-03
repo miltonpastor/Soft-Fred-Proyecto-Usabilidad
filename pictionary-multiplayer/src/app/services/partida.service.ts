@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { Partida } from '../models/partida.model';
 import { Mensaje } from '../models/mensaje.model';
-import { Jugador } from '../models/Jugador.model';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +63,7 @@ export class PartidaService {
     });
   }
 
+
   getOpcionesPalabras(): Observable<any> {
     return this.http.get(`${this.apiUrl}/palabras`);
   }
@@ -86,16 +86,17 @@ export class PartidaService {
     this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador, avatar);
   }
 
+
   // Salir de la sala
   salirDeSala(codigoPartida: string): void {
     this.socket.emit('salir_partida_socket', codigoPartida);
   }
 
-  // Escuchar eventos de error
-  escucharErrores() {
+  // Método para escuchar errores
+  escucharErrores(): Observable<any> {
     return new Observable<any>(observer => {
-      this.socket.on('error', (error: any) => {
-        observer.next(error);
+      this.socket.on('error', (data: any) => {
+        observer.next(data);
       });
     });
   }

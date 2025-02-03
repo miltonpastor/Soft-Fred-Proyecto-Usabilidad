@@ -43,19 +43,28 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.nombreJugador = localStorage.getItem('nombreJugador') || '';
+    this.codigoPartida = localStorage.getItem('codigoPartida') || '';
+    this.jugadorTurno = localStorage.getItem('jugadorTurno') || '';
+
     this.route.queryParams.subscribe(params => {
       this.nombreJugador = params['jugador'];
       this.codigoPartida = params['codigo_partida'];
+      localStorage.setItem('nombreJugador', this.nombreJugador);
+      localStorage.setItem('codigoPartida', this.codigoPartida);
     });
     // load anfitrion = dibujante
     this.modalService.jugadorTurno$.subscribe(nombre => {
       this.jugadorTurno = nombre || '';
+      localStorage.setItem('jugadorTurno', this.jugadorTurno);
     });
 
     this.partidaSubscription.add(
       this.partidaService.escucharFinPartida().subscribe(data => {
         this.jugadores = data.jugadores; // Actualizar la lista de jugadores
+        // this.partidaService.enviarMensajeChat(this.codigoPartida, "Game", `Fin de la Partida.`);
         this.estadoPartida = 'finPartida'; // Actualizar el estado de la partida
+        this.palabraAdivinar = 'Fin de la Partida';
       })
     );
 
@@ -75,16 +84,12 @@ export class PartidaComponent implements OnInit, OnDestroy {
         this.mensajes = mensajes;
       })
     );
+
     this.partidaSubscription.add(
       this.partidaService.escucharChat().subscribe(data => {
         this.mensajes.push(data);
         if (data.mensaje.includes('ha adivinado la palabra')) {
-          const { nombre_jugador, jugadores } = data;
-          this.estadoPartida = 'seleccionandoPalabra';
-          this.jugadorTurno = nombre_jugador;
-          this.jugadores = jugadores;
-          this.modalService.setJugadorTurno(this.jugadorTurno);
-          this.palabraAdivinar = 'Intenta Adivinar la Palabra';
+          this.actualizarEstadoPartida(data);
         }
       })
     );
@@ -96,16 +101,12 @@ export class PartidaComponent implements OnInit, OnDestroy {
     );
 
     this.partidaService.escucharTemporizadorTerminado().subscribe(data => {
-      const { nombre_jugador, jugadores } = data;
-      this.estadoPartida = 'seleccionandoPalabra';
-      this.jugadorTurno = nombre_jugador;
-      this.jugadores = jugadores;
-      console.log('Temporizador terminado', data);
-      this.modalService.setJugadorTurno(this.jugadorTurno);
-      this.palabraAdivinar = 'Intenta Adivinar la Palabra';
+      this.actualizarEstadoPartida(data);
     });
 
     this.esEditable = this.nombreJugador === this.jugadorTurno;
+    console.log('Jugador: ', this.nombreJugador, ' Jugador Turno: ', this.jugadorTurno, ' Editable: ', this.esEditable);
+
   }
 
   ngOnDestroy(): void {
@@ -115,6 +116,16 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
   cambiarEstadoPartida(nuevoEstado: string) {
     this.estadoPartida = nuevoEstado;
+  }
+
+
+  private actualizarEstadoPartida(data: any): void {
+    const { nombre_jugador, jugadores } = data;
+    this.estadoPartida = 'seleccionandoPalabra';
+    this.jugadorTurno = nombre_jugador;
+    this.jugadores = jugadores;
+    this.modalService.setJugadorTurno(this.jugadorTurno);
+    this.palabraAdivinar = 'Intenta Adivinar la Palabra';
   }
 
 

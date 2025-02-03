@@ -86,9 +86,6 @@ def iniciar_partida():
     partida['max_jugadores'] = int(jugadores)
     partida['ronda_actual'] += 1
     partida['estado'] = 'jugando'
-    mensaje = f'{partida["turno"]} está seleccionando la palabra'
-    partida['mensajes'].append({'nombre_jugador': 'Sistema', 'mensaje': mensaje})
-
     return jsonify({'mensaje': 'Partida iniciada'}), 200
 
 @socketio.on('iniciar_ronda')
@@ -193,7 +190,6 @@ def adivinar(codigo_partida,nombre, intento ):
         # fin de la ronda
         jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
         if (partida['ronda_actual'] >= partida['rondas']):
-            partida['mensajes'].append({'nombre_jugador': "Game", 'mensaje': 'la partida ha finalizado'})
             emit('fin_partida', {'mensaje': 'Fin de la partida', "jugadores": jugadores}, room=codigo_partida)
             return
         partida['ronda_actual'] += 1
@@ -224,7 +220,6 @@ def temporizador_terminado(data):
 
     jugadores = [jugador.__dict__ for jugador in partida['jugadores']]
     if partida['ronda_actual'] >= partida['rondas']:
-        partida['mensajes'].append({'nombre_jugador': "Game", 'mensaje': 'la partida ha finalizado'})
         emit('fin_partida', {'mensaje': 'Fin de la partida', "jugadores": jugadores}, room=codigo_partida)
         return
     # Seleccionar el siguiente jugador de manera aleatoria
