@@ -15,7 +15,6 @@
       <input [(ngModel)]="username" maxlength="13" name="username" aria-label="Ingresa tu nombre" placeholder="Ingresa tu nombre"
         required tabindex="0" />
       <button (click)="randomizeAvatar()" aria-label="Avatar aleatorio" tabindex="0">🎲</button>
-
     </div>
 
     <div class="container-buttons">
@@ -26,36 +25,34 @@
         Unirse a Partida
       </button>
     </div>
-
-
-    <app-unirse-partida *ngIf="showJoin" (partidaUnida)="onPartidaUnida($event)" [nombreJugador]="username" [avatarJugador]="selectedAvatar"
-      [onClose]="handleCloseJoin.bind(this)"></app-unirse-partida>
+    <app-unirse-partida *ngIf="showJoin" (partidaUnida)="onPartidaUnida($event)" [nombreJugador]="username"
+      [avatar]="selectedAvatar" [onClose]="handleCloseJoin.bind(this)"></app-unirse-partida>
   </div>
 
   <!-- info -->
   <div class="container-info">
-    <div class="card-info" tabindex="0">
-      <h3>❓ Acerca de</h3>
-      <p>
+    <div class="card-info" tabindex="0" aria-labelledby="acerca-de-titulo" aria-describedby="acerca-de-descripcion">
+      <h3 id="acerca-de-titulo">❓ Acerca de</h3>
+      <p id="acerca-de-descripcion" tabindex="0">
         Pictionary es un juego de adivinanzas donde un jugador dibuja y los
         demás intentan adivinar. ¡Diviértete con tus amigos!
       </p>
     </div>
-    <div class="card-info" tabindex="0">
-      <h3>📰 Noticias</h3>
-      <p>
+    <div class="card-info" tabindex="0" aria-labelledby="noticias-titulo" aria-describedby="noticias-descripcion">
+      <h3 id="noticias-titulo">📰 Noticias</h3>
+      <p id="noticias-descripcion" tabindex="0">
         Mantente informado sobre las últimas actualizaciones, mejoras y
         eventos del juego. ¡No te lo pierdas!
       </p>
     </div>
 
-    <div class="card-info" tabindex="0">
-      <h3>✏️ Cómo jugar</h3>
-      <p>
+    <div class="card-info" tabindex="0" aria-labelledby="como-jugar-titulo" aria-describedby="como-jugar-descripcion">
+      <h3 id="como-jugar-titulo">✏️ Cómo jugar</h3>
+      <p id="como-jugar-descripcion" tabindex="0">
         Para comenzar, selecciona "Crear Partida" o "Unirse a Partida", luego
         sigue las instrucciones para jugar.
       </p>
     </div>
   </div>
-
 </div>
+

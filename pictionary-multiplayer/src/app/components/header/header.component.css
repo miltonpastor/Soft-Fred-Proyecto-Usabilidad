@@ -1,5 +1,5 @@
 header {
-    color: #fff;
+    color: var(--dark-bg);
     padding: 1rem;
     text-align: center;
 }

@@ -9,10 +9,11 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./drawing-area.component.css'],
   standalone: false
 })
+
 export class DrawingAreaComponent implements OnInit, OnDestroy {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef<HTMLCanvasElement>;
   @Input() codigoPartida!: string; // Recibir el código de la partida como un @Input
-  @Input() usuarioQuePuedeDibujar!: string;
+  @Input() esEditable: boolean = false; // Nueva propiedad para controlar los permisos de edición
   private context!: CanvasRenderingContext2D;
   private isDrawing: boolean = false;
   private lastX: number = 0;
@@ -29,7 +30,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.nombreJugador = params['user'] || '';
+      this.nombreJugador = params['jugador'] || '';
     });
 
     this.context = this.canvas.nativeElement.getContext('2d', { willReadFrequently: true })!;
@@ -45,7 +46,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(event: MouseEvent): void {
-    if (this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.esEditable) {
       return;
     }
     this.isDrawing = true;
@@ -55,7 +56,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseMove(event: MouseEvent): void {
-    if (!this.isDrawing || this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.isDrawing || !this.esEditable) {
       return;
     }
     this.context.strokeStyle = this.brushColor;
@@ -77,7 +78,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseUp(event: MouseEvent): void {
-    if (this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.esEditable) {
       return;
     }
     this.isDrawing = false;
@@ -85,7 +86,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
   }
 
   onMouseLeave(event: MouseEvent): void {
-    if (this.nombreJugador !== this.usuarioQuePuedeDibujar) {
+    if (!this.esEditable) {
       return;
     }
     this.isDrawing = false;
@@ -138,8 +139,6 @@ export class DrawingAreaComponent implements OnInit, OnDestroy {
 
   private sendDrawing(): void {
     const drawing = this.canvas.nativeElement.toDataURL();
-    console.log('Enviando dibujo:', this.nombreJugador);
-
     this.partidaService.actualizarDibujo(this.codigoPartida, drawing, this.nombreJugador);
   }
 

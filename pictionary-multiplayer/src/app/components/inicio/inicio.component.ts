@@ -31,7 +31,7 @@ export class InicioComponent {
   OnNavigateToPartida() {
     if (this.codigoPartida) {
       this.router.navigate(['/partida'], {
-        queryParams: { codigo_partida: this.codigoPartida, user: this.username, avatar: this.selectedAvatar },
+        queryParams: { codigo_partida: this.codigoPartida, jugador: this.username },
       });
     }
   }
@@ -42,7 +42,7 @@ export class InicioComponent {
       next: (response) => {
         const codigoPartida = response?.partida?.codigo_partida;
         if (codigoPartida) {
-          this.modalService.setAnfitrion(this.username);
+          this.modalService.setJugadorTurno(this.username);
           this.modalService.setCodigoPartida(codigoPartida);
           this.partidaService.unirseASala(codigoPartida, this.username, this.selectedAvatar);
           this.OnNavigateToPartida();

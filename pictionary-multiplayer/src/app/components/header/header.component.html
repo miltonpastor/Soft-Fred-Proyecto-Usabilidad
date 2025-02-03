@@ -1,21 +1,5 @@
 <header>
     <div class="header-section">
         <h1 tabindex="0">Pincelada</h1>
-        <!-- Musica -->
-        <div>
-            <audio #backgroundAudio src="assets/puzzle-game-bright-casual-video-game-music-249202.mp3"
-                aria-label="Background music"></audio>
-        </div>
-        <!-- Botón con estilos minimalistas -->
-        <button
-            style="font-size: 1.5rem; border-radius: 50%; background-color: transparent; border: none; color: black;"
-            (click)="openModal()" aria-label="Open settings modal" tabindex="0">
-            <i class="bi bi-gear-fill" aria-hidden="true"></i>
-        </button>
-
-        <!-- Modal para controlar el volumen -->
-        <app-audio-modal *ngIf="isModalOpen" [isMusicPlaying]="isMusicPlaying" [currentVolume]="currentVolume"
-            (close)="closeModal()" (volumeChange)="setVolume($event)" (toggleMusic)="toggleBackgroundMusic($event)">
-        </app-audio-modal>
     </div>
 </header>

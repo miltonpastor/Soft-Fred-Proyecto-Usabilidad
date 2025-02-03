@@ -27,18 +27,13 @@ export class PartidaService {
     });
   }
 
-  // Método para unirse a una partida
-  unirsePartida(codigoPartida: string, nombreJugador: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/unirse_partida`, {
-      codigo_partida: codigoPartida,
-      nombre_jugador: nombreJugador
-    });
-  }
-
   // Método para iniciar la partida
-  iniciarPartida(codigoPartida: string): Observable<any> {
+  iniciarPartida(codigoPartida: string, tiempo: string, rondas: string, numJugadores: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/iniciar_partida`, {
-      codigo_partida: codigoPartida
+      codigo_partida: codigoPartida,
+      tiempo_por_ronda: tiempo,
+      rondas: rondas,
+      numJugadores: numJugadores
     });
   }
 
@@ -55,9 +50,18 @@ export class PartidaService {
       });
     });
   }
+  // Método para iniciar una nueva ronda
+  iniciarRonda(codigoPartida: string, palabra: string): void {
+    this.socket.emit('iniciar_ronda', { codigo_partida: codigoPartida, palabra });
+  }
 
-  adivinar(codigoPartida: string, intento: string): void {
-    this.socket.emit('adivinar', codigoPartida, intento);
+  // Método para escuchar el evento iniciar_ronda
+  escucharInicioRonda(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('tu_turno', (data: any) => {
+        observer.next(data);
+      });
+    });
   }
 
   getOpcionesPalabras(): Observable<any> {
@@ -65,20 +69,21 @@ export class PartidaService {
   }
 
 
-  // Recibir notificación cuando alguien acierta la palabra
-  recibirAdivinanza(callback: (mensaje: string) => void): void {
-    this.socket.on('acertado', (data: { mensaje: string }) => {
-      callback(data.mensaje);
+  // Emitir evento cuando el temporizador llegue a cero
+  notificarTemporizadorTerminado(codigoPartida: string, tiempoActual: number): void {
+    this.socket.emit('temporizador_terminado', { codigo_partida: codigoPartida, tiempo_actual: tiempoActual });
+  }
+  // Escuchar notificación del servidor
+  escucharTemporizadorTerminado(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('temporizador_terminado', (data: any) => {
+        observer.next(data);
+      });
     });
   }
 
-  // Obtener el estado de la partida
-  obtenerEstadoPartida(codigoPartida: string): Observable<Partida> {
-    return this.http.get<Partida>(`${this.apiUrl}/estado_partida/${codigoPartida}`);
-  }
-
-  unirseASala(codigoPartida: string, nombreJugador: string, avatarJugador: string): void {
-    this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador, avatarJugador);
+  unirseASala(codigoPartida: string, nombreJugador: string, avatar: string): void {
+    this.socket.emit('unirse_partida_socket', codigoPartida, nombreJugador, avatar);
   }
 
   // Salir de la sala
@@ -95,19 +100,6 @@ export class PartidaService {
     });
   }
 
-  // Iniciar la ronda
-  iniciarRonda(codigoPartida: string, tiempoPorRonda: number, rondas: number): void {
-    this.socket.emit('iniciar_ronda', { codigo_partida: codigoPartida, tiempo_por_ronda: tiempoPorRonda, rondas: rondas });
-  }
-
-  // Escuchar si la partida ha comenzado
-  escucharInicioPartida() {
-    return new Observable<any>(observer => {
-      this.socket.on('tu_turno', (data: any) => {
-        observer.next(data);
-      });
-    });
-  }
   // Salir de la sala
   salir() {
     this.socket.disconnect();
@@ -117,56 +109,50 @@ export class PartidaService {
     this.socket.disconnect();
   }
 
+  // Método para obtener todo el chat
+  obtenerTodoChat(codigoPartida: string): void {
+    this.socket.emit('obtener_todo_chat', codigoPartida);
+  }
 
-  //------------CHAT----------
-
-  // Obtener todos los mensjes del chat
-  obtenerMensajesChat(codigoPartida: string) {
-    return new Observable<Mensaje[]>(observer => {
-      // Pasar el codigo de la partida
-      this.socket.emit('obtener_todo_chat', codigoPartida)
-
-      // Escuchar los mensajes
-      this.socket.on('todo_chat', (data: Mensaje[]) => {
-        observer.next(data); // Emitir los datos recibidos
-        observer.complete(); // Completar el Observable después de emitir
+  // Método para escuchar todo el chat
+  escucharTodoChat(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('todo_chat', (mensajes: any) => {
+        observer.next(mensajes);
       });
     });
   }
 
-  // Escuchar los mensajes de chat
-  escucharChat() {
-    return new Observable<Mensaje>(observer => {
-      this.socket.on('mensaje_chat', (data: { nombre_jugador: string, mensaje: string }) => {
-        observer.next(data); // Emitir todo el objeto `data`
-      });
-    });
-  }
   // Enviar mensaje de chat
   enviarMensajeChat(codigoPartida: string, nombre: string, mensaje: string): void {
     this.socket.emit('adivinar', codigoPartida, nombre, mensaje); //a def adivinar
   }
-  //-----------------------------
 
-
-  // En el servicio, escucha los cambios de jugadores (unión a la partida)
-  escucharUnirsePartida(): Observable<Jugador[]> {
-    return new Observable<Jugador[]>(observer => {
-      this.socket.on('actualizar_jugadores', (response: { lista: Jugador[] }) => {
-        try {
-          console.log(response.lista)
-          observer.next(response.lista);
-
-        } catch (error) {
-          console.error('Error al obtener la lista de jugadores', error);
-        }
+  escucharChat(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('mensaje_chat', (data: { nombre_jugador: string, mensaje: string }) => {
+        observer.next(data);
       });
     });
   }
 
-  // En el servicio, escucha los cambios de jugadores (unión a la partida)
-  seleccionarPalabra(codigoPartida: string, palabra: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/seleccionar_palabra`, { codigo_partida: codigoPartida, palabra });
+  // Método para escuchar la lista actualizada de jugadores
+  escucharActualizacionJugadores(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('actualizar_jugadores', (data) => {
+        observer.next(data);
+      });
+    });
   }
+
+
+  escucharFinPartida(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('fin_partida', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
 
 }

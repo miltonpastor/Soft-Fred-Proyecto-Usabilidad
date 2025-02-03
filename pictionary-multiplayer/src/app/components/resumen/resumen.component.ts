@@ -1,9 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-
-interface Player {
-  name: string;
-  score: number;
-}
+import { Component, Input, OnInit } from '@angular/core';
+import { Jugador } from '../../models/Jugador.model';
 
 @Component({
   selector: 'app-resumen',
@@ -12,9 +8,14 @@ interface Player {
   standalone: false
 })
 export class ResumenComponent implements OnInit {
+  @Input() jugadores: Jugador[] = [];
+
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.ordenarJugadoresPorPuntaje();
   }
 
+  ordenarJugadoresPorPuntaje(): void {
+    this.jugadores.sort((a, b) => b.puntaje - a.puntaje);
+  }
 }
 

@@ -7,7 +7,6 @@ import { InicioComponent } from './components/inicio/inicio.component';
 import { ResumenComponent } from './components/resumen/resumen.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { CrearPartidaComponent } from './components/crear-partida/crear-partida.component';
 import { UnirsePartidaComponent } from './components/unirse-partida/unirse-partida.component';
 import { PartidaComponent } from './components/partida/partida.component';
 import { AudioModalComponent } from './components/audio-modal/audio-modal.component';
@@ -24,7 +23,6 @@ import { HeaderComponent } from './components/header/header.component';
     AppComponent,
     InicioComponent,
     ResumenComponent,
-    CrearPartidaComponent,
     UnirsePartidaComponent,
     PartidaComponent,
     AudioModalComponent,

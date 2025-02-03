@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { Partida } from '../../models/partida.model';
 import { Mensaje } from '../../models/mensaje.model';
 import { ModalService } from '../../services/modal.service';
-import { Jugador } from '../../models/jugador.model';
+import { Jugador } from '../../models/Jugador.model';
 
 @Component({
   selector: 'app-partida',
@@ -16,72 +16,95 @@ import { Jugador } from '../../models/jugador.model';
 export class PartidaComponent implements OnInit, OnDestroy {
   codigoPartida: string = '';
   nombreJugador: string = '';
-  nombreAnfitrion: string = '';
-  palabraAdivinar: string = '';
+  jugadorTurno: string = '';
+  palabraAdivinar: string = 'Intenta Adivinar la Palabra';
+  intervalId: any;
+  rondaActual: number = 0;
+  esEditable: boolean = false;
 
   intento: string = '';
-  tiempoPorRonda: number = 30;  // Ejemplo de valor
+  tiempoPorRonda: number = 0;  // Ejemplo de valor
+
   jugadores: Jugador[] = []; // Aquí almacenamos la lista de jugadores
   estadoPartida: string = 'esperando';  // Estado inicial de la partida
-  partida: Partida = {} as Partida;
+  // partida: Partida = {} as Partida;
   partidaSubscription: Subscription = new Subscription();
-  errores: string[] = [];
 
   // Para el chat y mensajes
   mensajeChat: string = '';
   mensajes: Mensaje[] = [];  // Aquí almacenamos los mensajes de chat
 
-
-  // Para presentar los jugadore
-  avatarJugador: string = '';
-  avatars: string[] = []
-
-
-  // Variables de la interfaz de la partida
-  mensajeTurno: string = '';
-
-  pantallaEspera: boolean = false;
-
   constructor(
     private route: ActivatedRoute,
     private partidaService: PartidaService,
-    private modalService: ModalService,
-    private router: Router
+    private modalService: ModalService
   ) { }
 
 
   ngOnInit(): void {
-    // Obtener los parámetros de la URL
     this.route.queryParams.subscribe(params => {
-      this.codigoPartida = params['codigo_partida'] || '';
-      this.nombreJugador = params['user'] || '';
-      this.avatarJugador = params['avatar'] || '';
+      this.nombreJugador = params['jugador'];
+      this.codigoPartida = params['codigo_partida'];
     });
     // load anfitrion = dibujante
-    this.modalService.anfitrion$.subscribe(anfitrion => {
-      this.nombreAnfitrion = anfitrion || '';
+    this.modalService.jugadorTurno$.subscribe(nombre => {
+      this.jugadorTurno = nombre || '';
     });
 
+    this.partidaSubscription.add(
+      this.partidaService.escucharFinPartida().subscribe(data => {
+        this.jugadores = data.jugadores; // Actualizar la lista de jugadores
+        this.estadoPartida = 'finPartida'; // Actualizar el estado de la partida
+      })
+    );
 
-    //--------------------------dasdsad----------------
-    this.escucharInicioPartida();
 
-    //Obtener todos los mensajes de chat (para jugadores que se unan despues)
-    this.partidaService.obtenerMensajesChat(this.codigoPartida).subscribe({
-      next: (data: Mensaje[]) => {
-        if (data.length === 0) {
-          this.enviarMensajeChat('ha creado la partida')
-        } else {
-          this.mensajes = data
-          this.enviarMensajeChat('ha ingresado a la partida')
+    this.partidaSubscription.add(
+      this.partidaService.escucharActualizacionJugadores().subscribe(data => {
+        this.jugadores = data.lista;
+        if (this.nombreJugador !== this.jugadorTurno) {
+          this.estadoPartida = data.estado;
         }
-      }
+        this.partidaService.obtenerTodoChat(this.codigoPartida);
+      })
+    );
+    // Escuchar todos los mensajes del chat
+    this.partidaSubscription.add(
+      this.partidaService.escucharTodoChat().subscribe(mensajes => {
+        this.mensajes = mensajes;
+      })
+    );
+    this.partidaSubscription.add(
+      this.partidaService.escucharChat().subscribe(data => {
+        this.mensajes.push(data);
+        if (data.mensaje.includes('ha adivinado la palabra')) {
+          const { nombre_jugador, jugadores } = data;
+          this.estadoPartida = 'seleccionandoPalabra';
+          this.jugadorTurno = nombre_jugador;
+          this.jugadores = jugadores;
+          this.modalService.setJugadorTurno(this.jugadorTurno);
+          this.palabraAdivinar = 'Intenta Adivinar la Palabra';
+        }
+      })
+    );
+
+    this.partidaSubscription.add(
+      this.partidaService.escucharInicioRonda().subscribe(data => {
+        this.manejarIniciarRonda(data);
+      })
+    );
+
+    this.partidaService.escucharTemporizadorTerminado().subscribe(data => {
+      const { nombre_jugador, jugadores } = data;
+      this.estadoPartida = 'seleccionandoPalabra';
+      this.jugadorTurno = nombre_jugador;
+      this.jugadores = jugadores;
+      console.log('Temporizador terminado', data);
+      this.modalService.setJugadorTurno(this.jugadorTurno);
+      this.palabraAdivinar = 'Intenta Adivinar la Palabra';
     });
 
-    // Escuchar los jugadores y el chat en tiempo real
-    this.iniciarEscucharPartida();
-    this.iniciarEscucharChat();
-    this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === '';
+    this.esEditable = this.nombreJugador === this.jugadorTurno;
   }
 
   ngOnDestroy(): void {
@@ -89,57 +112,10 @@ export class PartidaComponent implements OnInit, OnDestroy {
     this.partidaSubscription.unsubscribe();
   }
 
-  // En el componente donde se escucha el evento
-  iniciarEscucharPartida(): void {
-    this.partidaSubscription.add(
-      this.partidaService.escucharUnirsePartida().subscribe(
-        (jugadores: Jugador[]) => {
-          // Actualiza la lista de jugadores
-
-          console.log(jugadores)
-          this.jugadores = jugadores;
-          if (this.jugadores.length >= 2) {
-            this.iniciarPartida()
-          }
-        },
-        (error) => {
-        }
-      )
-    );
+  cambiarEstadoPartida(nuevoEstado: string) {
+    this.estadoPartida = nuevoEstado;
   }
 
-
-
-  escucharInicioPartida(): void {
-
-    this.partidaService.escucharInicioPartida().subscribe({
-      next: (data: any) => {
-        if (this.nombreJugador === this.nombreAnfitrion) {
-          this.palabraAdivinar = data.palabra;
-        }
-        this.nombreAnfitrion = data.dibujante;
-        this.pantallaEspera = this.nombreJugador === this.nombreAnfitrion && this.palabraAdivinar === ''
-        console.log('Es tu turno:', data);
-      }
-    });
-
-  }
-
-
-
-  //----------------------CHAT----------------------------
-
-  // Escuchar mensajes de chat
-  iniciarEscucharChat(): void {
-    this.partidaSubscription.add(
-      this.partidaService.escucharChat().subscribe({
-        next: (data: Mensaje) => {
-          this.mensajes.push(data);
-        },
-        error: (err) => console.log(err)
-      })
-    );
-  }
 
   // Enviar un mensaje de chat
   enviarMensajeChat(mensaje: string = ''): void {
@@ -153,33 +129,36 @@ export class PartidaComponent implements OnInit, OnDestroy {
   }
 
 
-  // Adivinar la palabra
-  adivinarPalabra(intento: string): void {
-    this.partidaService.adivinar(this.codigoPartida, intento);
-  }
-
-  // Función para salir de la partida
-  salirDePartida(): void {
-    this.partidaService.salirDeSala(this.codigoPartida);
-    this.router.navigate(['/']);
-  }
-
-  // Función para iniciar la partida
-  iniciarPartida(): void {
-    // this.nombreJugador === this.nombreAnfitrion &&
-    console.log("ya inicio");
-
-    if (this.estadoPartida === 'esperando') {
-      this.partidaService.iniciarPartida(this.codigoPartida).subscribe({
-        next: (respuesta) => {
-          console.log('Partida iniciada:', respuesta);
-        },
-        error: (err) => {
-          this.errores.push('No se pudo iniciar la partida. Intenta nuevamente.');
-        }
-      });
+  // Manejar la lógica para iniciar una nueva ronda
+  manejarIniciarRonda(data: any): void {
+    if (data.dibujante === this.nombreJugador) {
+      this.palabraAdivinar = 'Dibuja esto: ' + data.palabra;
     }
+    this.jugadorTurno = data.dibujante;
+    this.tiempoPorRonda = data.tiempo;
+    this.rondaActual = data.ronda;
+    this.estadoPartida = data.estado;
+    this.esEditable = this.nombreJugador === this.jugadorTurno;
+    this.iniciarTemporizador();
+    console.log('Iniciando ronda', data.dibujante, data.palabra, data.tiempo, data.ronda, data.estado);
+
   }
+
+
+  // Método para iniciar el temporizador
+  iniciarTemporizador(): void {
+    clearInterval(this.intervalId); // Limpiar cualquier intervalo previo
+    this.intervalId = setInterval(() => {
+      if (this.estadoPartida === 'jugando') {
+        if (this.tiempoPorRonda > 0) {
+          this.tiempoPorRonda--;
+        } else {
+          this.partidaService.notificarTemporizadorTerminado(this.codigoPartida, this.tiempoPorRonda);
+        }
+      }
+    }, 1000);
+  }
+
 
 
 
