@@ -129,6 +129,7 @@ def handle_disconnect():
 
 # Evento para unirse a una partida y unirse a la sala del juego
 @socketio.on('unirse_partida_socket')
+
 def unirse_partida_socket(codigo_partida, nombre_jugador, avatar):
     if codigo_partida not in partidas:
         emit('error', {'mensaje': 'Código de partida inválido'})

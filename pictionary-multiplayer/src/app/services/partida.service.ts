@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { Partida } from '../models/partida.model';
 import { Mensaje } from '../models/mensaje.model';
+import { Jugador } from '../models/jugador.model';
 
 @Injectable({
   providedIn: 'root'

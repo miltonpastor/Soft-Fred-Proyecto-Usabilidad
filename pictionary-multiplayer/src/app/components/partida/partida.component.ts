@@ -7,8 +7,6 @@ import { Mensaje } from '../../models/mensaje.model';
 import { ModalService } from '../../services/modal.service';
 import { Jugador } from '../../models/Jugador.model';
 
-
-
 @Component({
   selector: 'app-partida',
   templateUrl: './partida.component.html',
@@ -26,6 +24,7 @@ export class PartidaComponent implements OnInit, OnDestroy {
 
   intento: string = '';
   tiempoPorRonda: number = 0;  // Ejemplo de valor
+
   jugadores: Jugador[] = []; // Aquí almacenamos la lista de jugadores
   estadoPartida: string = 'esperando';  // Estado inicial de la partida
   // partida: Partida = {} as Partida;
