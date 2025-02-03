@@ -1,4 +1,5 @@
 export interface Jugador {
-  nombre: '',
-  avatar: ''
+  nombre: string;
+  avatar: string;
+  puntaje: number;
 }
