@@ -6,8 +6,8 @@ import random
 import time
 
 app = Flask(__name__)
-CORS(app)  # Permitir CORS para todas las rutas
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:4200")  # Especificar el origen de tu frontend
+CORS(app, origins=['*'])  # Permitir CORS para todas las rutas
+socketio = SocketIO(app, cors_allowed_origins="*")  # Especificar el origen de tu frontend
 
 # clase Jugador
 class Jugador:
