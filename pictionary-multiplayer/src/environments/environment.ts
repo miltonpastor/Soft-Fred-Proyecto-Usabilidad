@@ -1,6 +1,5 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:5000',  // URL del servidor Flask
-    socketUrl: 'http://localhost:5000' // URL de Socket.IO
+    apiUrl: 'https://c683-191-99-43-79.ngrok-free.app',  // URL del servidor Flask
+    socketUrl: 'https://c683-191-99-43-79.ngrok-free.app' // URL de Socket.IO
   };
-  
